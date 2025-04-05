@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<GridPane hgap="10" vgap="10"
+          stylesheets="@../style/style.css"
+          xmlns="http://javafx.com/javafx/23.0.1"
+          xmlns:fx="http://javafx.com/fxml"
+          fx:controller="cafe94.system.controller.staff.StaffDetailsPopupController">
+
+    <!-- Dynamic Title -->
+    <Label fx:id="titleLabel" styleClass="section-title" GridPane.columnSpan="2"/>
+
+    <Label text="First Name:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+    <TextField fx:id="firstNameField" promptText="First Name" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+    <Label text="Last Name:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+    <TextField fx:id="lastNameField" promptText="Last Name" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+
+    <Label text="Role:" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+    <ComboBox fx:id="roleComboBox" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+
+    <Label text="Password:" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
+    <PasswordField fx:id="passwordField" promptText="Password" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+
+    <Label text="Hours to Work:" GridPane.rowIndex="5" GridPane.columnIndex="0"/>
+    <TextField fx:id="hoursToWorkField" promptText="40hrs (Default)" GridPane.rowIndex="5" GridPane.columnIndex="1"/>
+
+    <Label text="Total Hours Worked:" GridPane.rowIndex="6" GridPane.columnIndex="0"/>
+    <TextField fx:id="totalHoursWorkedField" GridPane.rowIndex="6" GridPane.columnIndex="1"/>
+
+    <HBox spacing="15" alignment="CENTER" GridPane.rowIndex="8" GridPane.columnSpan="2">
+        <Button text="Cancel" prefWidth="100" onAction="#handleCancel"/>
+        <Button text="Save" prefWidth="100" onAction="#handleSave"/>
+
+    </HBox>
+
+</GridPane>

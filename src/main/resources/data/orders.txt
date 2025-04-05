@@ -1,0 +1,8 @@
+1;1;EAT_IN;false;;;;-1;Brownie#2;READY_TO_SERVE
+2;1;TAKEAWAY;false;09:00;;;-1;Caramel Macaron#1;READY_TO_PICKUP
+2;1;TAKEAWAY;false;09:00;;;-1;Caramel Macaron#1;READY_TO_SERVE
+3;1;DELIVERY;false;;123 Main Street;18:00;-1;Cappuccino#1,Carbonara#1;READY_TO_DELIVER
+4;1;DELIVERY;false;;123 Main Street;09:00;4;Carbonara#1,Cheeseburger#1;READY_TO_DELIVER
+5;1;TAKEAWAY;false;12:00;;;-1;Cappuccino#2,Margherita Pizza#2;PENDING_PREP
+6;1;DELIVERY;false;;123 Main Street;18:00;4;Cheesecake#1,Carbonara#1;READY_TO_DELIVER
+7;1;DELIVERY;true;;123 Main Street;13:00;4;Coke#1,Caesar Salad#1;DELIVERED

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+
+<StackPane prefWidth="600" prefHeight="500"
+           xmlns="http://javafx.com/javafx/23.0.1"
+           xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="cafe94.system.controller.WelcomeLoginController"
+           stylesheets="@../style/style.css">
+
+    <VBox alignment="CENTER" spacing="15">
+
+        <!-- Logo -->
+        <ImageView fx:id="logoCafe" fitHeight="240" fitWidth="300" preserveRatio="true"/>
+
+        <!-- Title -->
+        <Label text="W E L C O M E"/>
+
+        <!-- Login Fields -->
+        <TextField fx:id="idField" promptText="Enter User ID" maxWidth="250"/>
+        <PasswordField fx:id="passwordField" promptText="Enter Password" maxWidth="250"/>
+
+        <!-- Staff Role ComboBox -->
+        <ComboBox fx:id="staffComboBox" promptText="Select staff profile" maxWidth="250"/>
+
+        <!-- Login Button -->
+        <Button text="Login" onAction="#handleLogin"/>
+
+        <!-- Register as new customer -->
+        <Button text="Register as New Customer" onAction="#handleRegister"/>
+
+    </VBox>
+
+</StackPane>

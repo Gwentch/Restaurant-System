@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.chart.BarChart?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<?import javafx.scene.layout.Region?>
+<BorderPane prefHeight="600" prefWidth="800" stylesheets="@../style/style.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cafe94.system.controller.staff.ManagerDashboardController">
+
+    <top>
+        <HBox alignment="CENTER">
+            <Label styleClass="page-title" text="Welcome to Manager Dashboard">
+                <HBox.margin>
+                    <Insets bottom="10.0" />
+                </HBox.margin></Label>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Label fx:id="loggedInAsLabel" styleClass="login-font" text="Welcome" />
+        </HBox>
+    </top>
+
+    <center>
+        <TabPane>
+            <!-- Outstanding Orders Tab -->
+            <Tab closable="false" styleClass="com-font" text="Outstanding Orders">
+                <VBox spacing="10">
+
+                    <TableView fx:id="ordersTable" prefHeight="200">
+                        <columnResizePolicy>
+                            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                        </columnResizePolicy>
+                        <columns>
+                            <TableColumn fx:id="orderIdCol" prefWidth="65" text="Order ID" />
+                            <TableColumn fx:id="customerIdCol" prefWidth="65" text="Customer ID" />
+                            <TableColumn fx:id="orderTypeCol" prefWidth="100" text="Type" />
+                            <TableColumn fx:id="addressCol" prefWidth="170" text="Delivery Address" />
+                            <TableColumn fx:id="orderStatusCol" prefWidth="100" text="Status" />
+                        </columns>
+                    </TableView>
+
+                    <Label styleClass="forms-label" text=" 🔍 Details in selected order :" />
+                    <HBox alignment="TOP_RIGHT" spacing="5">
+                        <TableView fx:id="itemsTable" prefHeight="150" HBox.hgrow="ALWAYS">
+                            <columnResizePolicy>
+                                <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                            </columnResizePolicy>
+                            <columns>
+                                <TableColumn fx:id="itemNameCol" prefWidth="150" text="Item" />
+                                <TableColumn fx:id="qtyCol" prefWidth="75" text="Qty" />
+                                <TableColumn fx:id="priceCol" prefWidth="75" text="Price (£)" />
+                                <TableColumn fx:id="subtotalCol" prefWidth="75" text="Subtotal (£)" />
+                            </columns>
+                            <HBox.margin>
+                                <Insets right="400.0" />
+                            </HBox.margin>
+                        </TableView>
+
+                    </HBox>
+                    <HBox alignment="TOP_RIGHT" spacing="5">
+                        <Label fx:id="totalLabel" styleClass="forms-label" text="Total: £0.00">
+                            <HBox.margin>
+                                <Insets right="420.0" />
+                            </HBox.margin></Label>
+                    </HBox>
+
+                </VBox>
+            </Tab>
+
+            <!-- Staff Management Tab -->
+            <Tab closable="false" style="-fx-font-weight: bold" text="Manage Staff">
+                <VBox spacing="10">
+                    <TableView fx:id="staffTable" prefHeight="300">
+                        <columnResizePolicy>
+                            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                        </columnResizePolicy>
+                        <columns>
+                            <TableColumn fx:id="idColumn" prefWidth="50" text="ID" />
+                            <TableColumn fx:id="firstNameColumn" prefWidth="100" text="First Name" />
+                            <TableColumn fx:id="lastNameColumn" prefWidth="100" text="Last Name" />
+                            <TableColumn fx:id="roleColumn" prefWidth="100" text="Role" />
+                            <TableColumn fx:id="hoursToWorkCol" prefWidth="120" text="Hours to Work" />
+                            <TableColumn fx:id="totalHoursWorkedCol" prefWidth="140" text="Total Hours Worked" />
+                        </columns>
+                    </TableView>
+
+                    <HBox spacing="10">
+                        <Button onAction="#handleAddStaff" text="Add Staff" />
+                        <Button onAction="#handleEditStaff" text="Edit Selected" />
+                        <Button fx:id="removeStaffButton" onAction="#handleRemoveStaff" text="Remove Selected" />
+                    </HBox>
+                </VBox>
+            </Tab>
+
+            <!-- Reports Tab -->
+            <Tab closable="false" style="-fx-font-weight: bold" text="Reports">
+                <VBox spacing="10">
+                    <Label text=" " />
+                    <HBox spacing="10">
+                            <Button onAction="#generateMostPopularItems" text="Most Popular Items" />
+                            <Button onAction="#generateBusiestPeriods" text="Busiest Periods" />
+                            <Button onAction="#generateMostActiveCustomer" text="Most Active Customer" />
+                            <Button onAction="#generateTopStaff" text="Top Performing Staff" />
+                    </HBox>
+
+                    <TabPane fx:id="reportTabPane">
+                        <Tab closable="false" text="Chart View">
+                            <BarChart fx:id="reportChart" prefHeight="500" prefWidth="600">
+                                <xAxis>
+                                    <CategoryAxis label="Category" />
+                                </xAxis>
+                                <yAxis>
+                                    <NumberAxis label="Value" />
+                                </yAxis>
+                            </BarChart>
+                        </Tab>
+
+                        <Tab closable="false" text="Text Summary">
+                            <TextArea fx:id="reportSect" prefRowCount="12" />
+                        </Tab>
+                    </TabPane>
+                </VBox>
+            </Tab>
+        </TabPane>
+    </center>
+
+    <bottom>
+        <HBox alignment="CENTER_RIGHT">
+            <Button onAction="#handleLogout" text="Logout" />
+        </HBox>
+    </bottom>
+</BorderPane>

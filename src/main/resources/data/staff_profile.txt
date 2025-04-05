@@ -1,0 +1,4 @@
+1;Taylor;Swift;MANAGER;pw123
+2;Emma;Stone;WAITER;pw123
+3;Jerry;Sans;CHEF;pw123
+4;Shelbie;Ares;DRIVER;pw123

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox alignment="TOP_CENTER" prefHeight="600" prefWidth="800" spacing="15" stylesheets="@../style/style.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cafe94.system.controller.customer.OrderHistoryController">
+
+    <!-- Title -->
+    <Label styleClass="page-title" text="Order History" />
+
+    <!-- Orders Table (Master) -->
+    <TableView fx:id="ordersTable" maxWidth="600" prefHeight="250">
+        <columnResizePolicy>
+            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+        </columnResizePolicy>
+        <columns>
+            <TableColumn fx:id="orderIdColumn" prefWidth="100" text="Order ID" />
+            <TableColumn fx:id="orderTypeColumn" prefWidth="100" text="Type of Order" />
+            <TableColumn fx:id="orderTotalColumn" prefWidth="100" text="Total Amount" />
+        </columns>
+    </TableView>
+
+    <!-- Order Details Table (Detail) -->
+    <Label styleClass="section-title" text="Order Details" />
+    <TableView fx:id="itemsTable" maxWidth="600" prefHeight="200">
+        <columnResizePolicy>
+            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+        </columnResizePolicy>
+        <columns>
+            <TableColumn fx:id="itemNameColumn" text="Item" />
+            <TableColumn fx:id="quantityColumn" text="Quantity" />
+            <TableColumn fx:id="unitPriceColumn" text="Unit Price" />
+            <TableColumn fx:id="subtotalColumn" text="Subtotal" />
+        </columns>
+    </TableView>
+
+    <HBox alignment="BOTTOM_RIGHT">
+    <!-- Total -->
+    <Label fx:id="totalLabel" style="-fx-font-weight: bold;" text="Total: £0.00">
+         <HBox.margin>
+            <Insets right="100.0" />
+         </HBox.margin></Label>
+    </HBox>
+
+    <Button onAction="#handleBack" text="Back" />
+</VBox>
