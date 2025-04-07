@@ -46,6 +46,8 @@ public abstract class User {
         return this.firstName + " " + this.lastName;
     }
 
+    public abstract String toFileString();
+
     @Override
     public String toString() {
         return "[ID: " + id + "] " + getFullName();

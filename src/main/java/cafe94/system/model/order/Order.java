@@ -1,56 +1,41 @@
 package cafe94.system.model.order;
 
 import cafe94.system.model.menu.MenuItem;
+import cafe94.system.model.order.OrderItem;
+import cafe94.system.model.order.OrderType;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Represents a customer order in the Cafe94 system.
+ * Abstract superclass representing a general order in Cafe94.
+ * Specific types of orders such as EatIn, Takeaway, and Delivery should extend this class.
  */
-public class Order {
-
+public abstract class Order {
 
     private static int nextOrderID = 1;
-
     private final int orderID;
     private int customerID;
-    private OrderType type;
     private OrderStatus status = OrderStatus.PENDING_PREP;
-    private final List<OrderItem> items = new ArrayList<>();
     private boolean completed = false;
 
-    // Order based on type
-    private String pickUpTime = "";              // For TAKEAWAY
-    private String deliveryAddress = "";         // For DELIVERY
-    private String estimatedDeliveryTime = "";   // For DELIVERY
-    private int assignedStaffDriverID = -1;      // For DELIVERY (Default to unassigned)
+    protected final List<OrderItem> items = new ArrayList<>();
 
-    // === Constructor (new order) ===
-    public Order(int customerID, OrderType type) {
+    // Constructor for new orders
+    public Order(int customerID) {
         this.orderID = nextOrderID++;
         this.customerID = customerID;
-        this.type = type;
     }
 
-    // === Constructor (loading from file) ===
-    public Order(int orderID, int customerID, OrderType type) {
+    // Constructor for loading from file (custom ID)
+    public Order(int orderID, int customerID) {
         this.orderID = orderID;
         this.customerID = customerID;
-        this.type = type;
     }
 
-    // === Getters / Setters ===
+    // === Accessors ===
     public int getOrderID() {
         return orderID;
-    }
-
-    public static int getNextOrderID() {
-        return nextOrderID;
-    }
-
-    public static void setNextOrderID(int nextID) {
-        nextOrderID = nextID;
     }
 
     public int getCustomerID() {
@@ -59,14 +44,6 @@ public class Order {
 
     public void setCustomerID(int customerID) {
         this.customerID = customerID;
-    }
-
-    public OrderType getType() {
-        return type;
-    }
-
-    public void setType(OrderType type) {
-        this.type = type;
     }
 
     public OrderStatus getStatus() {
@@ -85,41 +62,6 @@ public class Order {
         this.completed = completed;
     }
 
-    public String getPickUpTime() {
-        return pickUpTime;
-    }
-
-    public void setPickUpTime(String pickUpTime) {
-        this.pickUpTime = pickUpTime;
-    }
-
-    public String getDeliveryAddress() {
-        return deliveryAddress;
-    }
-
-    public void setDeliveryAddress(String deliveryAddress) {
-        this.deliveryAddress = deliveryAddress;
-    }
-
-    public String getEstimatedDeliveryTime() {
-        return estimatedDeliveryTime;
-    }
-
-    public void setEstimatedDeliveryTime(String estimatedDeliveryTime) {
-        this.estimatedDeliveryTime = estimatedDeliveryTime;
-    }
-
-
-
-    public void setAssignedStaffDriverID(int assignedStaffDriverID) {
-        this.assignedStaffDriverID = assignedStaffDriverID;
-    }
-
-
-    public int getAssignedStaffDriverID() {
-        return assignedStaffDriverID;
-    }
-
     public List<OrderItem> getItems() {
         return items;
     }
@@ -132,36 +74,84 @@ public class Order {
         return items.stream().mapToDouble(OrderItem::getSubtotal).sum();
     }
 
+    //  Static Method to Parse from File
+    public static Order parseFromFile(String line, List<MenuItem> menuItems) {
+        try {
+            String[] parts = line.split(";", -1);
+            if (parts.length < 10) return null;
 
-    public String toFileString() {
+            int orderID = Integer.parseInt(parts[0]);
+            int customerID = Integer.parseInt(parts[1]);
+            OrderType type = OrderType.valueOf(parts[2].toUpperCase());
+            boolean completed = Boolean.parseBoolean(parts[3]);
+
+            String pickupTime = parts[4];
+            String deliveryAddress = parts[5];
+            String estimatedDeliveryTime = parts[6];
+            int assignedDriverID = parts[7].isEmpty() ? -1 : Integer.parseInt(parts[7]);
+
+            String itemData = parts[8];
+            OrderStatus status = OrderStatus.valueOf(parts[9].trim());
+
+            List<OrderItem> items = new ArrayList<>();
+            if (!itemData.isEmpty()) {
+                String[] itemParts = itemData.split(",");
+                for (String itemStr : itemParts) {
+                    String[] itemDetail = itemStr.split("#");
+                    if (itemDetail.length == 2) {
+                        String itemName = itemDetail[0].trim();
+                        int quantity = Integer.parseInt(itemDetail[1].trim());
+
+                        MenuItem matchedItem = menuItems.stream()
+                                .filter(m -> m.getName().equalsIgnoreCase(itemName))
+                                .findFirst()
+                                .orElse(null);
+
+                        if (matchedItem != null) {
+                            items.add(new OrderItem(matchedItem, quantity));
+                        } else {
+                            System.out.println("⚠ Menu item not found while loading: " + itemName);
+                        }
+                    }
+                }
+            }
+
+            // Create the appropriate subclass of Order
+            return switch (type) {
+                case EAT_IN -> new EatInOrder(orderID, customerID, completed, items, status);
+                case TAKEAWAY -> new TakeawayOrder(orderID, customerID, completed, items, status, pickupTime);
+                case DELIVERY -> new DeliveryOrder(orderID, customerID, completed, items, status, deliveryAddress, estimatedDeliveryTime, assignedDriverID);
+            };
+
+        } catch (Exception e) {
+            System.err.println("Failed to parse order: " + line);
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    // Abstract methods to implement
+    public abstract OrderType getOrderType();
+
+    public abstract String toFileString();
+
+
+    protected String itemsToString() {
         StringBuilder sb = new StringBuilder();
-        sb.append(orderID).append(";")
-                .append(customerID).append(";")
-                .append(type).append(";")
-                .append(completed).append(";")
-                .append(pickUpTime).append(";")
-                .append(deliveryAddress).append(";")
-                .append(estimatedDeliveryTime).append(";")
-                .append(assignedStaffDriverID).append(";");
-
-
         for (int i = 0; i < items.size(); i++) {
             OrderItem item = items.get(i);
             sb.append(item.getMenuItem().getName()).append("#").append(item.getQuantity());
             if (i < items.size() - 1) sb.append(",");
         }
-
-        sb.append(";").append(status.name());
         return sb.toString();
     }
 
-
-
-
-    @Override
-    public String toString() {
-            return orderID + ";" + customerID + ";" + type + ";" + status.name() + ";" +
-                    assignedStaffDriverID + ";";
-        }
-
+    // Handle OrderID increment tracking
+    public static int getNextOrderID() {
+        return nextOrderID;
     }
+
+    public static void setNextOrderID(int nextID) {
+        nextOrderID = nextID;
+    }
+}

@@ -44,12 +44,11 @@ public class OrderHistoryController {
     // -------- Data --------
     private Customer customer;
     private OrderManaged orderManaged;
-    private boolean isReady = false;
 
     @FXML
     private void initialize() {
         orderIdColumn.setCellValueFactory(data -> new SimpleIntegerProperty(data.getValue().getOrderID()).asObject());
-        orderTypeColumn.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getType().toString()));
+        orderTypeColumn.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getOrderType().toString()));
         orderTotalColumn.setCellValueFactory(data -> new SimpleDoubleProperty(data.getValue().getTotalAmount()).asObject());
 
         itemNameColumn.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getMenuItem().getName()));
@@ -66,9 +65,6 @@ public class OrderHistoryController {
                 totalLabel.setText("Total: £0.00");
             }
         });
-
-        isReady = true;
-        reloadOrders(); // attempt loading if data is already present
     }
 
     // -------- Setup method (replaces setX methods) --------

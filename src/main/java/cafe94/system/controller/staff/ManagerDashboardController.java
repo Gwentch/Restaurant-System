@@ -2,7 +2,6 @@ package cafe94.system.controller.staff;
 
 import cafe94.system.data.DataSaver;
 import cafe94.system.model.order.*;
-import cafe94.system.model.user.Customer;
 import cafe94.system.model.user.Staff;
 import cafe94.system.utils.AppState;
 import cafe94.system.utils.OutstandingOrderHelper;
@@ -15,12 +14,10 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.chart.BarChart;
-import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 import javafx.util.Pair;
 
-import java.util.*;
 
 public class ManagerDashboardController {
 

@@ -1,10 +1,7 @@
 package cafe94.system.controller.staff;
 
 import cafe94.system.data.DataSaver;
-import cafe94.system.model.order.Order;
-import cafe94.system.model.order.OrderItem;
-import cafe94.system.model.order.OrderManaged;
-import cafe94.system.model.order.OrderStatus;
+import cafe94.system.model.order.*;
 import cafe94.system.utils.AppState;
 import cafe94.system.utils.OutstandingOrderHelper;
 import cafe94.system.utils.OutstandingOrderHelper.OrderTableType;
@@ -88,7 +85,7 @@ public class DriverDashboardController {
 
         List<Order> assigned = orderManaged.getOutstandingOrders().stream()
                 .filter(o -> o.getStatus() == OrderStatus.READY_TO_DELIVER)
-                .filter(o -> o.getAssignedStaffDriverID() == driverId)
+                .filter(o -> o instanceof DeliveryOrder d && d.getAssignedStaffDriverID() == driverId)
                 .toList();
 
         ordersTable.setItems(FXCollections.observableArrayList(assigned));

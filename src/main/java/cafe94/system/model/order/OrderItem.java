@@ -3,8 +3,8 @@ package cafe94.system.model.order;
 import cafe94.system.model.menu.MenuItem;
 
 public class OrderItem {
-    public MenuItem menuItem;
-    public int quantity;
+    private final MenuItem menuItem;
+    private final int quantity;
 
     public OrderItem(MenuItem menuItem, int quantity) {
         this.menuItem = menuItem;
@@ -12,22 +12,14 @@ public class OrderItem {
     }
 
     public MenuItem getMenuItem() {
-        return menuItem; }
+        return menuItem;
+    }
 
     public int getQuantity() {
-        return quantity; }
-
-    public String getItemName() {
-        return menuItem.getName();
+        return quantity;
     }
 
     public double getSubtotal() {
         return menuItem.getPrice() * quantity;
     }
-
-    @Override
-    public String toString() {
-        return menuItem.getName() + " x" + quantity + " (£" + String.format("%.2f", getSubtotal()) + ")";
-    }
-
 }

@@ -1,5 +1,6 @@
 package cafe94.system.controller.staff;
 
+import cafe94.system.model.order.OrderType;
 import cafe94.system.data.DataSaver;
 import cafe94.system.model.menu.MenuItem;
 import cafe94.system.model.order.*;
@@ -19,7 +20,6 @@ import java.util.List;
 import java.util.Random;
 
 public class ChefDashboardController {
-
     @FXML private ComboBox<String> filterComboBox;
     @FXML private TableView<Order> ordersTable;
     @FXML private TableColumn<Order, Integer> orderIdCol;
@@ -176,30 +176,28 @@ public class ChefDashboardController {
         }
 
         // Set new status based on order type
-        selected.setStatus(selected.getType().getNextStatus());
+        selected.setStatus(selected.getOrderType().getNextStatus());
 
         // Assign driver if DELIVERY
-        if (selected.getType() == OrderType.DELIVERY) {
+        if (selected.getOrderType() == OrderType.DELIVERY) {
             List<Driver> drivers = getAvailableDrivers();
             if (!drivers.isEmpty()) {
                 Driver assigned = drivers.get(new Random().nextInt(drivers.size()));
-                selected.setAssignedStaffDriverID(assigned.getId());
+                ((DeliveryOrder) selected).setAssignedStaffDriverID(assigned.getId());
 
                 System.out.println("Assigned driver ID: " + assigned.getId() + " to order #" + selected.getOrderID());
 
             } else {
                 showError("⚠ Currently no available drivers to assign!");
             }
-
         }
 
         // Save updated orders
         DataSaver.saveOrders(ORDERS_FILE, AppState.orderManaged.getAllOrders());
 
         showInfo("✔ Order #" + selected.getOrderID() + " marked as ready!");
+
         loadOrders(filterComboBox.getValue());
-
-
 
         // Clear UI
         ordersTable.getSelectionModel().clearSelection();

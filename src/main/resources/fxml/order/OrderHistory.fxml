@@ -10,7 +10,6 @@
 
 <VBox alignment="TOP_CENTER" prefHeight="600" prefWidth="800" spacing="15" stylesheets="@../style/style.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cafe94.system.controller.customer.OrderHistoryController">
 
-    <!-- Title -->
     <Label styleClass="page-title" text="Order History" />
 
     <!-- Orders Table (Master) -->
@@ -47,5 +46,8 @@
          </HBox.margin></Label>
     </HBox>
 
-    <Button onAction="#handleBack" text="Back" />
+    <Button onAction="#handleBack" text="Back">
+      <VBox.margin>
+         <Insets left="700.0" />
+      </VBox.margin></Button>
 </VBox>

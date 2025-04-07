@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.VBox?>
 
 <VBox alignment="TOP_CENTER"
-      prefHeight="500" prefWidth="600"
+      prefHeight="600" prefWidth="800"
       spacing="20" stylesheets="@../style/style.css"
       xmlns="http://javafx.com/javafx/23.0.1"
       xmlns:fx="http://javafx.com/fxml/1"
@@ -15,6 +15,8 @@
     <!-- Title -->
     <Label styleClass="page-title" text="Customer Dashboard" />
     <Label text="W E L C O M E   TO   C A F E 9 4" />
+    <Label fx:id="loggedInAsLabel" styleClass="login-font" />
+
 
     <!-- Customer Info -->
     <VBox fx:id="customerInfoBox" alignment="CENTER_LEFT" maxHeight="80.0" maxWidth="330.0" minHeight="80.0" minWidth="0.0" prefHeight="80.0" prefWidth="330.0" spacing="10" styleClass="info-box">

@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.VBox?>
+
+<?import javafx.scene.control.ComboBox?>
+<BorderPane prefHeight="600" prefWidth="800" stylesheets="@../style/style.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cafe94.system.controller.customer.CustomerBookingController">
+
+    <!-- LEFT: Booking Form -->
+    <left>
+        <VBox maxWidth="300" minWidth="300" prefWidth="300" spacing="12" styleClass="@../style/style.css">
+            <Label style="-fx-font-size: 16px; -fx-font-weight: bold;" text="Book a Table " />
+
+            <Label text="Customer ID:">
+            <VBox.margin>
+               <Insets top="5.0" />
+            </VBox.margin></Label>
+            <TextField fx:id="customerID" editable="false" style="-fx-opacity: 0.7;" prefWidth="280.0" />
+
+            <Label text="Number of Guests:">
+            <VBox.margin>
+               <Insets top="5.0" />
+            </VBox.margin></Label>
+            <TextField fx:id="guestsField" promptText="Enter number of guests" />
+
+            <Label text="Date:">
+            <VBox.margin>
+               <Insets top="5.0" />
+            </VBox.margin></Label>
+            <DatePicker fx:id="datePicker" />
+
+            <Label text="Time:">
+            <VBox.margin>
+               <Insets top="5.0" />
+            </VBox.margin></Label>
+            <ComboBox fx:id="timeComboBox"/>
+
+            <Label text="Duration (hrs):">
+            <VBox.margin>
+               <Insets top="5.0" />
+            </VBox.margin></Label>
+            <TextField fx:id="durationField" promptText="Default: 1" />
+
+            <Button onAction="#handleSubmit" text="Request Booking">
+            <VBox.margin>
+               <Insets top="10.0" />
+            </VBox.margin></Button>
+         <BorderPane.margin>
+            <Insets left="20.0" top="10.0" />
+         </BorderPane.margin>
+        </VBox>
+    </left>
+
+    <!-- CENTER: Booking Table -->
+    <center>
+        <VBox alignment="TOP_RIGHT" spacing="10">
+            <Label style="-fx-font-size: 14px; -fx-font-weight: bold;" text="Your Booking Requests">
+            <VBox.margin>
+               <Insets right="240.0" />
+            </VBox.margin></Label>
+            <TableView fx:id="bookingTable" maxWidth="400.0" prefHeight="300.0" prefWidth="400.0">
+                <columns>
+                    <TableColumn fx:id="idCol" prefWidth="50" text="ID" />
+                    <TableColumn fx:id="dateCol" prefWidth="100" text="Date" />
+                    <TableColumn fx:id="timeCol" prefWidth="50" text="Time" />
+                    <TableColumn fx:id="guestsCol" prefWidth="50" text="Guests" />
+                    <TableColumn fx:id="durationCol" prefWidth="70" text="Duration" />
+                    <TableColumn fx:id="statusCol" prefWidth="130" text="Status" />
+                </columns>
+            <columnResizePolicy>
+               <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+            </columnResizePolicy>
+            <VBox.margin>
+               <Insets />
+            </VBox.margin>
+            </TableView>
+
+            <Button onAction="#handleCancel" text="Cancel Booking">
+            <VBox.margin>
+               <Insets top="5.0" />
+            </VBox.margin></Button>
+         <BorderPane.margin>
+            <Insets right="7.0" top="30.0" />
+         </BorderPane.margin>
+        </VBox>
+    </center>
+    <bottom>
+        <Button onAction="#handleBack" text="Back" BorderPane.alignment="BOTTOM_RIGHT" />
+    </bottom>
+</BorderPane>

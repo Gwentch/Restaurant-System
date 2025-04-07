@@ -56,5 +56,11 @@ public class Customer extends User {
     public String getRole() {
         return "Customer";
     }
+
+    @Override
+    public String toFileString() {
+        return String.format("%d;%s;%s;%s;%s", getId(), getFirstName(), getLastName(), getAddress(), getPassword());
+    }
+
 }
 

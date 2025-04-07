@@ -1,6 +1,8 @@
 package cafe94.system.controller.staff;
 
 import cafe94.system.data.DataSaver;
+import cafe94.system.model.booking.Booking;
+import cafe94.system.model.booking.BookingStatus;
 import cafe94.system.model.order.*;
 import cafe94.system.utils.AppState;
 import cafe94.system.utils.OutstandingOrderHelper;
@@ -13,18 +15,25 @@ import java.util.List;
 
 public class WaiterDashboardController {
 
+
     @FXML private ComboBox<String> filterComboBox;
     @FXML private TableView<Order> ordersTable;
     @FXML private TableColumn<Order, Integer> orderIdCol;
     @FXML private TableColumn<Order, Integer> customerIdCol;
     @FXML private TableColumn<Order, String> orderTypeCol;
-    @FXML private TableColumn<Order, String> statusCol;
+    @FXML private TableColumn<Order, String> orderStatusCol;
 
     @FXML private TableView<OrderItem> itemsTable;
     @FXML private TableColumn<OrderItem, String> itemNameCol;
     @FXML private TableColumn<OrderItem, Integer> qtyCol;
     @FXML private TableColumn<OrderItem, Double> priceCol;
     @FXML private TableColumn<OrderItem, Double> subtotalCol;
+
+    @FXML private TableView<Booking> bookingTable;
+    @FXML private TableColumn<Booking, Integer> idCol, customerCol, guestCol, durationCol;
+    @FXML private TableColumn<Booking, String> dateCol, timeCol, bookingStatusCol;
+
+
 
     @FXML private Label orderTotalLabel;
     @FXML private Label loggedInAsLabel;
@@ -34,7 +43,7 @@ public class WaiterDashboardController {
     private static final String ORDERS_FILE = "src/main/resources/data/orders.txt";
 
     private OrderManaged orderManaged;
-
+    private List<Booking> bookings;
 
     // Called from Main App to inject data
     public void setup(OrderManaged orderManaged) {
@@ -51,6 +60,17 @@ public class WaiterDashboardController {
     @FXML
     private void initialize() {
         loggedInAsLabel.setText("Logged in as: " + AppState.loggedInStaff.getFullName());
+        bookings = AppState.bookingList;
+        bookingTable.setItems(FXCollections.observableArrayList(bookings));
+
+        // Booking table
+        idCol.setCellValueFactory(data -> new javafx.beans.property.SimpleIntegerProperty(data.getValue().getBookingID()).asObject());
+        customerCol.setCellValueFactory(data -> new javafx.beans.property.SimpleIntegerProperty(data.getValue().getCustomerID()).asObject());
+        guestCol.setCellValueFactory(data -> new javafx.beans.property.SimpleIntegerProperty(data.getValue().getGuestNum()).asObject());
+        dateCol.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().getDate()));
+        timeCol.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().getTime()));
+        durationCol.setCellValueFactory(data -> new javafx.beans.property.SimpleIntegerProperty(data.getValue().getDurationHours()).asObject());
+        bookingStatusCol.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().getStatus().toString()));
 
         // Order table based on role
         OutstandingOrderHelper.setupOrderColumnsByRole(
@@ -59,7 +79,7 @@ public class WaiterDashboardController {
                 customerIdCol,
                 orderTypeCol,
                 null,
-                statusCol
+                orderStatusCol
         );
         // Item table
         OutstandingOrderHelper.setupOrderItemColumns(itemNameCol, qtyCol, priceCol, subtotalCol);
@@ -108,6 +128,26 @@ public class WaiterDashboardController {
 
         DataSaver.saveOrders(ORDERS_FILE, AppState.orderManaged.getAllOrders());
         loadOrders(filterComboBox.getValue());
+    }
+
+    @FXML
+    private void handleBookingApprove() {
+        Booking selected = bookingTable.getSelectionModel().getSelectedItem();
+        if (selected == null) {
+            showInfo("Please select a booking to approve.");
+            return;
+        }
+
+        if (selected.getStatus() == BookingStatus.APPROVED) {
+            showInfo("This booking has already been approved.");
+            return;
+        }
+
+        selected.setStatus(BookingStatus.APPROVED);
+        DataSaver.saveBookings("src/main/resources/data/booking.txt", bookings);
+        bookingTable.refresh(); // This makes the table row update with the new status
+
+        showInfo("✔ Booking approved.");
     }
 
     @FXML

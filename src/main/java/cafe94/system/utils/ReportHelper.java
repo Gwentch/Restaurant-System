@@ -1,9 +1,7 @@
 package cafe94.system.utils;
 
 
-import cafe94.system.model.order.Order;
-import cafe94.system.model.order.OrderItem;
-import cafe94.system.model.order.OrderManaged;
+import cafe94.system.model.order.*;
 import cafe94.system.model.user.Customer;
 import cafe94.system.model.user.Staff;
 import javafx.scene.chart.BarChart;
@@ -181,23 +179,26 @@ public class ReportHelper {
         Map<String, Integer> hourCount = new TreeMap<>();
 
         for (Order order : orderManaged.getAllOrders()) {
-            String timeStr = switch (order.getType()) {
-                case TAKEAWAY -> order.getPickUpTime();
-                case DELIVERY -> order.getEstimatedDeliveryTime();
-                default -> null;
-            };
+            String timeStr = null;
+
+            if (order instanceof TakeawayOrder takeaway) {
+                timeStr = takeaway.getPickupTime();
+            } else if (order instanceof DeliveryOrder delivery) {
+                timeStr = delivery.getEstimatedDeliveryTime();
+            }
 
             if (timeStr == null || timeStr.isEmpty()) continue;
 
             String[] parts = timeStr.split(":");
             if (parts.length >= 1) {
                 String hour = parts[0];
-                if (hour.length() == 1) hour = "0" + hour; // Pad
+                if (hour.length() == 1) hour = "0" + hour; // pad to 2 digits
                 hourCount.put(hour, hourCount.getOrDefault(hour, 0) + 1);
             }
         }
 
         return hourCount;
     }
+
 
 }

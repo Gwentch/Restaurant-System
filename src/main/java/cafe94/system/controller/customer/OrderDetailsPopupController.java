@@ -1,8 +1,10 @@
 package cafe94.system.controller.customer;
 
+import cafe94.system.model.order.DeliveryOrder;
 import cafe94.system.model.order.Order;
 import cafe94.system.model.order.OrderItem;
 import cafe94.system.model.order.OrderType;
+import cafe94.system.model.order.TakeawayOrder;
 import cafe94.system.model.user.Customer;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -16,7 +18,6 @@ import java.util.List;
 
 public class OrderDetailsPopupController {
 
-    // ---------- FXML ----------
     @FXML private Label orderIdLabel;
     @FXML private VBox takeawayPane;
     @FXML private VBox deliveryPane;
@@ -32,7 +33,6 @@ public class OrderDetailsPopupController {
     @FXML private TableColumn<OrderItem, String> itemSubtotalColumn;
     @FXML private Label orderTotalLabel;
 
-    // ---------- Data ----------
     private Customer customer;
     public Order previewOrder;
     private boolean confirmed = false;
@@ -42,7 +42,7 @@ public class OrderDetailsPopupController {
             "15:00", "16:00", "17:00", "18:00", "19:00", "20:00"
     );
 
-    // ---------- Setup ----------
+
     public void setup(Order order, Customer customer) {
         this.customer = customer;
         this.previewOrder = order;
@@ -53,11 +53,12 @@ public class OrderDetailsPopupController {
         takeawayPane.setVisible(false);
         deliveryPane.setVisible(false);
 
-        if (order.getType() == OrderType.TAKEAWAY) {
+        if (order instanceof TakeawayOrder) {
             takeawayPane.setVisible(true);
             pickupTimeCombo.setItems(FXCollections.observableArrayList(AVAILABLE_TIMES));
             pickupTimeCombo.getSelectionModel().selectFirst();
-        } else if (order.getType() == OrderType.DELIVERY) {
+
+        } else if (order instanceof DeliveryOrder) {
             deliveryPane.setVisible(true);
             deliveryAddress.setText(customer.getAddress());
             useProfileAddressCheckBox.setSelected(true);
@@ -65,6 +66,7 @@ public class OrderDetailsPopupController {
             estimatedDeliveryTimeCombo.setItems(FXCollections.observableArrayList(AVAILABLE_TIMES));
             estimatedDeliveryTimeCombo.getSelectionModel().selectFirst();
         }
+
 
         populateOrderTable(order);
     }
@@ -85,7 +87,6 @@ public class OrderDetailsPopupController {
         orderTotalLabel.setText(String.format("Total: £%.2f", total));
     }
 
-    // ---------- Event Handlers ----------
     @FXML
     private void handleUseProfileAddress() {
         boolean useProfile = useProfileAddressCheckBox.isSelected();
@@ -115,7 +116,7 @@ public class OrderDetailsPopupController {
         close();
     }
 
-    // ---------- Helpers ----------
+
     private boolean isValidTimeFormat(String timeStr) {
         return timeStr != null && timeStr.matches("\\d{2}:\\d{2}");
     }
@@ -135,7 +136,7 @@ public class OrderDetailsPopupController {
         stage.close();
     }
 
-    // ---------- Public Getters ----------
+
     public boolean isConfirmed() {
         return confirmed;
     }

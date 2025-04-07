@@ -78,6 +78,7 @@ public class Staff extends User {
         this.totalHoursWorked = hours;
     }
 
+
     @Override
     public String getRole() {
         return type.name();
@@ -87,4 +88,10 @@ public class Staff extends User {
     public String toString() {
         return "[ID: " + id + "] " + getFullName() + " (" + type.name() + ")";
     }
+
+    @Override
+    public String toFileString() {
+        return String.format("%d;%s;%s;%s;%s;%s", getId(), getFirstName(), getLastName(), getPassword(), type, getHoursToWork());
+    }
+
 }

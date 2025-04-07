@@ -1,26 +1,32 @@
 package cafe94.system.model.order;
 
+import cafe94.system.model.order.OrderStatus;
+
 /**
- * Represents the type of order in Cafe94.
+ * Enum representing the type of orders in Cafe94.
+ * Used for UI, reporting, or user-friendly display purposes.
  */
 public enum OrderType {
-    EAT_IN,
-    TAKEAWAY,
-    DELIVERY;
+    EAT_IN("Eat-In"),
+    TAKEAWAY("Takeaway"),
+    DELIVERY("Delivery");
 
-    /**
-     * Convert order type to a user-friendly string.
-     */
-    public static String getDisplayType(OrderType type) {
-        return switch (type) {
-            case EAT_IN -> "Eat-In";
-            case TAKEAWAY -> "Takeaway";
-            case DELIVERY -> "Delivery";
-        };
+    private final String displayName;
+
+    OrderType(String displayName) {
+        this.displayName = displayName;
+    }
+
+    @Override
+    public String toString() {
+        return displayName;
     }
 
     /**
-     * Returns the next appropriate order status based on order type.
+     * Returns the next appropriate order status based on the order type.
+     * This can be used when marking an order as completed by the chef.
+     *
+     * @return the next status for this order type
      */
     public OrderStatus getNextStatus() {
         return switch (this) {
@@ -28,5 +34,10 @@ public enum OrderType {
             case TAKEAWAY -> OrderStatus.READY_TO_PICKUP;
             case DELIVERY -> OrderStatus.READY_TO_DELIVER;
         };
+    }
+
+
+    public static String getDisplayType(OrderType type) {
+        return type.toString(); // or return type.displayName; either works
     }
 }

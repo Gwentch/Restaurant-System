@@ -1,9 +1,6 @@
 package cafe94.system.utils;
 
-import cafe94.system.model.order.Order;
-import cafe94.system.model.order.OrderItem;
-import cafe94.system.model.order.OrderStatus;
-import cafe94.system.model.order.OrderType;
+import cafe94.system.model.order.*;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -48,7 +45,7 @@ public class OutstandingOrderHelper {
                 }
                 if (orderTypeCol != null) {
                     orderTypeCol.setCellValueFactory(data ->
-                            new SimpleStringProperty(OrderType.getDisplayType(data.getValue().getType())));
+                            new SimpleStringProperty(OrderType.getDisplayType(data.getValue().getOrderType())));
                 }
                 if (statusCol != null) {
                     statusCol.setCellValueFactory(data ->
@@ -66,12 +63,18 @@ public class OutstandingOrderHelper {
                             new SimpleIntegerProperty(data.getValue().getCustomerID()).asObject());
                 }
                 if (addressCol != null) {
-                    addressCol.setCellValueFactory(data ->
-                            new SimpleStringProperty(data.getValue().getDeliveryAddress()));
-                }
-                if (statusCol != null) {
-                    statusCol.setCellValueFactory(data ->
-                            new SimpleStringProperty(data.getValue().getStatus().toString()));
+                    addressCol.setCellValueFactory(data -> {
+                        if (data.getValue() instanceof DeliveryOrder delivery) {
+                            return new SimpleStringProperty(delivery.getDeliveryAddress());
+                        } else {
+                            return new SimpleStringProperty("-");
+                        }
+                    });
+
+                    if (statusCol != null) {
+                        statusCol.setCellValueFactory(data ->
+                                new SimpleStringProperty(data.getValue().getStatus().toString()));
+                    }
                 }
             }
 
@@ -86,15 +89,21 @@ public class OutstandingOrderHelper {
                 }
                 if (orderTypeCol != null) {
                     orderTypeCol.setCellValueFactory(data ->
-                            new SimpleStringProperty(OrderType.getDisplayType(data.getValue().getType())));
+                            new SimpleStringProperty(OrderType.getDisplayType(data.getValue().getOrderType())));
                 }
                 if (addressCol != null) {
-                    addressCol.setCellValueFactory(data ->
-                            new SimpleStringProperty(data.getValue().getDeliveryAddress()));
-                }
-                if (statusCol != null) {
-                    statusCol.setCellValueFactory(data ->
-                            new SimpleStringProperty(data.getValue().getStatus().toString()));
+                    addressCol.setCellValueFactory(data -> {
+                        if (data.getValue() instanceof DeliveryOrder delivery) {
+                            return new SimpleStringProperty(delivery.getDeliveryAddress());
+                        } else {
+                            return new SimpleStringProperty("-");
+                        }
+                    });
+
+                    if (statusCol != null) {
+                        statusCol.setCellValueFactory(data ->
+                                new SimpleStringProperty(data.getValue().getStatus().toString()));
+                    }
                 }
             }
         }
@@ -107,7 +116,7 @@ public class OutstandingOrderHelper {
                                              TableColumn<OrderItem, Integer> qtyCol,
                                              TableColumn<OrderItem, Double> priceCol,
                                              TableColumn<OrderItem, Double> subtotalCol) {
-        itemNameCol.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getItemName()));
+        itemNameCol.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getMenuItem().getName()));
         qtyCol.setCellValueFactory(data -> new SimpleIntegerProperty(data.getValue().getQuantity()).asObject());
         priceCol.setCellValueFactory(data -> new SimpleDoubleProperty(data.getValue().getMenuItem().getPrice()).asObject());
         subtotalCol.setCellValueFactory(data -> new SimpleDoubleProperty(data.getValue().getSubtotal()).asObject());

@@ -1,7 +1,11 @@
 package cafe94.system.controller.customer;
 
+import cafe94.system.model.order.DeliveryOrder;
+import cafe94.system.model.order.TakeawayOrder;
 import cafe94.system.data.DataSaver;
 import cafe94.system.model.menu.MenuItem;
+import cafe94.system.model.order.OrderType;
+import cafe94.system.model.order.OrderItem;
 import cafe94.system.model.order.*;
 import cafe94.system.model.user.Customer;
 import cafe94.system.utils.AppState;
@@ -152,9 +156,24 @@ public class OrderingController {
             return;
         }
 
-        Order order = new Order(customer.getId(), orderType.getValue());
+        Order order;
+        OrderType selectedType = orderType.getSelectionModel().getSelectedItem();
+
+        if (selectedType == OrderType.TAKEAWAY) {
+            order = new TakeawayOrder(customer.getId());
+        } else if (selectedType == OrderType.DELIVERY) {
+            order = new DeliveryOrder(customer.getId());
+        } else {
+            showInfo("Invalid Order Type", "Please select a valid order type.");
+            return;
+        }
+
+
+
+        // Add basket items
         basket.forEach(item -> order.addItem(item.getMenuItem(), item.getQuantity()));
 
+        // Load popup and handle confirmation
         Pair<Stage, OrderDetailsPopupController> result =
                 SceneManager.loadPopup("order/OrderDetailsPopup.fxml", "Order Details", 500, 600);
         if (result == null) return;
@@ -164,16 +183,18 @@ public class OrderingController {
 
         if (!result.getValue().isConfirmed()) return;
 
-        if (order.getType() == OrderType.TAKEAWAY) {
-            order.setPickUpTime(result.getValue().getPickupTime());
-        } else if (order.getType() == OrderType.DELIVERY) {
-            order.setDeliveryAddress(result.getValue().getDeliveryAddress());
-            order.setEstimatedDeliveryTime(result.getValue().getEstimatedDeliveryTime());
+        // Apply order-type-specific fields
+        if (order instanceof TakeawayOrder) {
+            ((TakeawayOrder) order).setPickupTime(result.getValue().getPickupTime());
+        } else if (order instanceof DeliveryOrder) {
+            ((DeliveryOrder) order).setDeliveryAddress(result.getValue().getDeliveryAddress());
+            ((DeliveryOrder) order).setEstimatedDeliveryTime(result.getValue().getEstimatedDeliveryTime());
         }
 
+
+        // Save and clear
         orderManaged.addOrder(order);
         DataSaver.saveOrders(ORDERS_FILE, AppState.orderManaged.getAllOrders());
-
         showInfo("Order Successful", "Order ID: " + order.getOrderID() + "\nThank you for ordering with Cafe94!");
         basket.clear();
         updateOrderTotal();
