@@ -94,7 +94,9 @@ public class WorkingHoursPopupController {
             DataSaver.saveStaff(STAFF_PROFILE_FILE, AppState.allStaff);
             saved = true;
             showInfo("Working hours saved successfully.");
-            SceneManager.closePopup();
+
+            ((Stage) formContainer.getScene().getWindow()).close();
+
         } catch (NumberFormatException e) {
             showAlert("Format Error", "Please enter valid numeric values (e.g., 8.0)");
         }

@@ -72,8 +72,11 @@ public class StaffDetailsPopupController {
 
     @FXML
     private void handleCancel() {
-        SceneManager.closePopup();
+        System.out.println("Cancel clicked — using direct stage close");
+        Stage stage = (Stage) firstNameField.getScene().getWindow();
+        stage.close();
     }
+
 
     @FXML
     private void handleSave() {
@@ -118,7 +121,7 @@ public class StaffDetailsPopupController {
             alert.setContentText(successMessage);
             alert.showAndWait();
 
-            SceneManager.closePopup();
+            ((Stage) firstNameField.getScene().getWindow()).close();
 
         } catch (NumberFormatException e) {
             showAlert("Please enter correct format of working hours (e.g. 40.0)");

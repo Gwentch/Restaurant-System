@@ -1,11 +1,12 @@
 package cafe94.system.utils;
 
-
+import cafe94.system.model.menu.MenuItem;
 import cafe94.system.model.order.*;
 import cafe94.system.model.user.Customer;
 import cafe94.system.model.user.Staff;
 import javafx.scene.chart.BarChart;
 import javafx.scene.chart.XYChart;
+import javafx.scene.control.Label;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextArea;
 
@@ -14,7 +15,7 @@ import java.util.stream.Collectors;
 
 /**
  * Provides reusable methods for generating various reports in the Cafe94 system.
- *
+ * All methods operate in a static utility fashion and require access to order or staff/customer data.
  */
 public class ReportHelper {
 
@@ -160,9 +161,9 @@ public class ReportHelper {
 
         chart.getData().clear();
         XYChart.Series<String, Number> series = new XYChart.Series<>();
-        series.setName("Best Employee of the Month");
+        series.setName("Best Employee of Cafe94");
 
-        StringBuilder text = new StringBuilder("🏆 Best Employee of the Month:\n\n");
+        StringBuilder text = new StringBuilder("🏆 Best Employee of Cafe94:\n\n");
         for (Map.Entry<String, Double> entry : topStaff) {
             series.getData().add(new XYChart.Data<>(entry.getKey(), entry.getValue()));
             text.append(entry.getKey()).append(": ")
@@ -199,6 +200,4 @@ public class ReportHelper {
 
         return hourCount;
     }
-
-
 }

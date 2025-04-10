@@ -45,31 +45,6 @@ public class SceneManager {
         }
     }
 
-    /**
-     * Switch and return controller to allow data passing
-     */
-    public static <T> T switchToWithController(String fxmlPath) {
-        if (primaryStage == null) {
-            showError("Stage Not Set", "Please call SceneManager.setStage(stage) before switching scenes.");
-            return null;
-        }
-
-        try {
-            FXMLLoader loader = new FXMLLoader(SceneManager.class.getResource("/fxml/" + fxmlPath));
-            Parent root = loader.load();
-            Scene scene = new Scene(root, 800, 600);
-            primaryStage.setScene(scene);
-            primaryStage.setResizable(false);
-            primaryStage.centerOnScreen();
-            primaryStage.setTitle("Cafe94 - " + getTitleFromPath(fxmlPath));
-            primaryStage.show();
-            return loader.getController();
-
-        } catch (IOException e) {
-            showError("Scene Switch Failed", "Could not load: " + fxmlPath);
-            return null;
-        }
-    }
 
     /**
      * Switches to the given FXML scene and applies setup logic on the controller.
@@ -88,7 +63,6 @@ public class SceneManager {
             controllerSetup.accept(controller);
 
             Scene scene = new Scene(root);
-            scene.getStylesheets().add(SceneManager.class.getResource("/style/style.css").toExternalForm());
 
             primaryStage.setScene(scene);
 
@@ -117,23 +91,12 @@ public class SceneManager {
             popupStage.centerOnScreen();
             popupStage.sizeToScene();
 
-            currentPopupStage = popupStage;
             return new Pair<>(popupStage, controller);
         } catch (IOException e) {
             showError("Popup Failed", "Could not load popup: " + fxmlPath);
             return null;
         }
     }
-
-    private static Stage currentPopupStage = null;
-
-    public static void closePopup() {
-        if (currentPopupStage != null) {
-            currentPopupStage.close();
-            currentPopupStage = null;
-        }
-    }
-
 
     /**
      * Helper
