@@ -6,6 +6,7 @@ import cafe94.system.utils.AppState;
 import cafe94.system.utils.SceneManager;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 
@@ -14,6 +15,7 @@ import javafx.scene.control.TextField;
  */
 public class RegisterCustomerController {
 
+    @FXML private Button loginButton;
     @FXML private TextField firstNameField;
     @FXML private TextField lastNameField;
     @FXML private TextField addressField;
@@ -33,7 +35,7 @@ public class RegisterCustomerController {
         String password = passwordField.getText().trim();
 
         if (first.isEmpty() || last.isEmpty() || address.isEmpty() || password.isEmpty()) {
-            showAlert("All fields are required.");
+            showAlert("Warning","All fields are required.");
             return;
         }
 
@@ -41,9 +43,16 @@ public class RegisterCustomerController {
         AppState.allCustomer.add(newCustomer);
         DataSaver.saveCustomers(CUSTOMER_FILE, AppState.allCustomer);
 
-        showAlert("Registration successful! You may login now 😊");
+        showAlert("Registration successful!",
+                "Your Customer ID is: " + newCustomer.getId() + "\nPlease remember this ID to login 😊");
         SceneManager.switchTo("standard/WelcomeLogin.fxml");
     }
+
+    @FXML
+    private void handleLogin() {
+        SceneManager.switchTo("standard/WelcomeLogin.fxml");
+    }
+
 
     /**
      * Returns to the login page without saving data.
@@ -56,10 +65,10 @@ public class RegisterCustomerController {
     /**
      * Displays a simple info alert.
      */
-    private void showAlert(String message) {
+    private void showAlert(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Cafe94");
-        alert.setHeaderText(null);
+        alert.setHeaderText(title);
         alert.setContentText(message);
         alert.showAndWait();
     }

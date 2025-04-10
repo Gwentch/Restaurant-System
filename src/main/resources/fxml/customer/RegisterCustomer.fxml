@@ -31,7 +31,9 @@
             <Button onAction="#handleCancel" text="Cancel" />
         </HBox>
 
-        <Label fx:id="statusLabel" textFill="red" />
+        <HBox alignment="CENTER" spacing="20">
+        <Button fx:id="loginButton" text="Login" onAction="#handleLogin" />
+        </HBox>
     </VBox>
      <Label layoutX="294.0" layoutY="38.0" styleClass="page-title" text="Create New Account">
         </Label>
