@@ -12,10 +12,7 @@ import cafe94.system.model.user.Staff;
 import cafe94.system.utils.SceneManager;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.event.ActionEvent;
 import javafx.scene.image.ImageView;
 import javafx.util.StringConverter;
@@ -27,9 +24,11 @@ public class WelcomeLoginController {
     @FXML private TextField idField;
     @FXML private PasswordField passwordField;
     @FXML private ComboBox<Staff> staffComboBox;
+    @FXML private CheckBox manualLoginCheckBox;
 
     @FXML
     public void initialize() {
+        idField.setDisable(true);
         // Load customerList and staff
         AppState.allCustomer = DataLoader.loadCustomers("src/main/resources/data/customer.txt");
         AppState.allStaff = DataLoader.loadStaff("src/main/resources/data/staff_profile.txt");
@@ -41,6 +40,14 @@ public class WelcomeLoginController {
         } else {
             System.out.println("Image not found!");
         }
+
+        staffComboBox.setOnAction(event -> {
+            Staff selected = staffComboBox.getValue();
+            if (selected != null && !manualLoginCheckBox.isSelected()) {
+                idField.setText(String.valueOf(selected.getId()));
+                idField.setDisable(true);
+            }
+        });
 
         // Populate existing staff profile
         staffComboBox.setItems(FXCollections.observableArrayList(AppState.allStaff));
@@ -130,9 +137,31 @@ public class WelcomeLoginController {
         showAlert("Invalid ID or Password. Please try again.");
     }
 
+
+    @FXML
+    private void handleToggleLoginMode() {
+        boolean isManual = manualLoginCheckBox.isSelected();
+
+        if (isManual) {
+            // Manual mode: user types username
+            idField.clear();
+            idField.setDisable(false);
+            staffComboBox.setDisable(true);
+        } else {
+            idField.setDisable(true);
+            staffComboBox.setDisable(false);
+
+            Staff selected = staffComboBox.getValue();
+            if (selected != null) {
+                idField.setText(String.valueOf(selected.getId()));
+
+            }
+        }
+    }
+
     @FXML
     private void handleRegister(ActionEvent event) {
-        SceneManager.switchTo("customer/Register.fxml");
+        SceneManager.switchTo("customer/RegisterCustomer.fxml");
     }
 
     private void showAlert(String message) {

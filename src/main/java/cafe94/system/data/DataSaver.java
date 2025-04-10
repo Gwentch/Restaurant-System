@@ -99,7 +99,7 @@ public class DataSaver {
     /**
      * Saves a list of bookings to a file.
      *
-     * @param path         the file path to save)
+     * @param path         the file path to save
      * @param bookingList  the list of bookings to save
      */
     public static void saveBookings(String path, List<Booking> bookingList) {

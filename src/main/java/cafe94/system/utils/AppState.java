@@ -33,6 +33,7 @@ public class AppState {
         orderManaged = new OrderManaged();
         orderManaged.loadOrdersFromFile("src/main/resources/data/orders.txt", menuItems);
 
+
         bookingList = DataLoader.loadBookings("src/main/resources/data/booking.txt");
 
     }

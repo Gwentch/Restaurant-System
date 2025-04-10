@@ -168,8 +168,6 @@ public class OrderingController {
             return;
         }
 
-
-
         // Add basket items
         basket.forEach(item -> order.addItem(item.getMenuItem(), item.getQuantity()));
 
@@ -189,6 +187,8 @@ public class OrderingController {
         } else if (order instanceof DeliveryOrder) {
             ((DeliveryOrder) order).setDeliveryAddress(result.getValue().getDeliveryAddress());
             ((DeliveryOrder) order).setEstimatedDeliveryTime(result.getValue().getEstimatedDeliveryTime());
+            order.setStatus(OrderStatus.READY_TO_DELIVER);
+            ((DeliveryOrder) order).setAssignedStaffDriverID(-1);
         }
 
 

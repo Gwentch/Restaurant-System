@@ -88,8 +88,8 @@
                             <TableColumn fx:id="firstNameColumn" prefWidth="100" text="First Name" />
                             <TableColumn fx:id="lastNameColumn" prefWidth="100" text="Last Name" />
                             <TableColumn fx:id="roleColumn" prefWidth="100" text="Role" />
-                            <TableColumn fx:id="hoursToWorkCol" prefWidth="120" text="Hours to Work" />
-                            <TableColumn fx:id="totalHoursWorkedCol" prefWidth="140" text="Total Hours Worked" />
+                            <TableColumn fx:id="hoursToWorkCol" prefWidth="120" text="Total Planned Hours(5 days)" />
+                            <TableColumn fx:id="totalHoursWorkedCol" prefWidth="140" text="Total Worked Hours(5 days)" />
                         </columns>
                     </TableView>
 

@@ -133,7 +133,37 @@ public abstract class Order {
     // Abstract methods to implement
     public abstract OrderType getOrderType();
 
-    public abstract String toFileString();
+
+    public String toFileString() {
+        String pickupTime = "";
+        String deliveryAddress = "";
+        String estimatedDeliveryTime = "";
+        int assignedDriverID = -1;
+
+        if (this instanceof TakeawayOrder takeaway) {
+            pickupTime = takeaway.getPickupTime();
+        } else if (this instanceof DeliveryOrder delivery) {
+            deliveryAddress = delivery.getDeliveryAddress();
+            estimatedDeliveryTime = delivery.getEstimatedDeliveryTime();
+            assignedDriverID = delivery.getAssignedStaffDriverID();
+        }
+
+        // Escape semicolons in item names if any (optional defensive)
+        String items = itemsToString().replace(";", ",");
+
+        return String.join(";",
+                String.valueOf(getOrderID()),                    // 0
+                String.valueOf(getCustomerID()),                 // 1
+                getOrderType().name(),                           // 2
+                String.valueOf(isCompleted()),                   // 3
+                pickupTime == null ? "" : pickupTime,            // 4
+                deliveryAddress == null ? "" : deliveryAddress,  // 5
+                estimatedDeliveryTime == null ? "" : estimatedDeliveryTime, // 6
+                String.valueOf(assignedDriverID),                // 7
+                items,                                           // 8
+                getStatus().name()                               // 9
+        );
+    }
 
 
     protected String itemsToString() {

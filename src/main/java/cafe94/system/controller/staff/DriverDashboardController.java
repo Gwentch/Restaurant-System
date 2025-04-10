@@ -83,14 +83,24 @@ public class DriverDashboardController {
     private void loadDriverOrders() {
         int driverId = AppState.loggedInStaff.getId();
 
+        // Assign all READY_TO_DELIVER delivery orders without a driver
+        for (Order o : orderManaged.getOutstandingOrders()) {
+            if (o instanceof DeliveryOrder delivery &&
+                    delivery.getStatus() == OrderStatus.READY_TO_DELIVER &&
+                    delivery.getAssignedStaffDriverID() == -1) {
+                delivery.setAssignedStaffDriverID(driverId);
+            }
+        }
+
+        // Show only this driver's assigned orders
         List<Order> assigned = orderManaged.getOutstandingOrders().stream()
                 .filter(o -> o.getStatus() == OrderStatus.READY_TO_DELIVER)
                 .filter(o -> o instanceof DeliveryOrder d && d.getAssignedStaffDriverID() == driverId)
                 .toList();
 
         ordersTable.setItems(FXCollections.observableArrayList(assigned));
-
     }
+
 
     /**
      * Marks the selected order as delivered.

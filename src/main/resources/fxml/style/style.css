@@ -110,9 +110,9 @@
 }
 
 .table-cell {
-    -fx-padding: 4px;
-
+    -fx-alignment: CENTER;
 }
+
 
 .table-row-cell:filled:selected {
     -fx-background-color: #377987;

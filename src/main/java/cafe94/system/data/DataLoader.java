@@ -12,6 +12,7 @@ import javafx.collections.ObservableList;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class DataLoader {
@@ -52,18 +53,23 @@ public class DataLoader {
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
             String line;
             while ((line = reader.readLine()) != null) {
+                if (line.contains(";")) {
+                    line = line.substring(0, line.indexOf(";"));
+                }
                 for (MenuItem item : menuItems) {
                     if (item.getName().equalsIgnoreCase(line.trim())) {
                         specials.add(item);
+                        break; // good practice: stop once found
                     }
                 }
             }
-            System.out.println("Daily specials loaded successfully.");
+            System.out.println("Daily specials loaded: " + specials.size());
         } catch (IOException e) {
             System.out.println("Error loading daily specials: " + e.getMessage());
         }
         return specials;
     }
+
 
     /**
      * Loads all orders from a given file.
@@ -148,10 +154,10 @@ public class DataLoader {
                     int id = Integer.parseInt(parts[0].trim());
                     String firstName = parts[1].trim();
                     String lastName = parts[2].trim();
-                    String role = parts[3].trim().toLowerCase();
-                    String password = parts[4].trim();
-                    double hoursToWork = parts.length > 5 ? Double.parseDouble(parts[5].trim()) : 0.0;
-                    double totalHoursWorked = parts.length > 6 ? Double.parseDouble(parts[6].trim()) : 0.0;
+                    String password = parts[3].trim();
+                    String role = parts[4].trim().toLowerCase();
+                    List<Double> hoursToWork = parts.length > 5 ? Staff.parseHoursList(parts[5].trim()) : Collections.emptyList();
+                    List<Double> totalHoursWorked = parts.length > 6 ? Staff.parseHoursList(parts[6].trim()) : Collections.emptyList();
 
                     Staff staff;
                     switch (role) {
@@ -168,7 +174,7 @@ public class DataLoader {
                             staff = new Driver(id, firstName, lastName, password, hoursToWork, totalHoursWorked);
                             break;
                         default:
-                            System.out.println("Unknown staff role: " + role + ", skipping...");
+                            System.out.println("Unknown staff role: " + role);
                             continue;
                     }
                     staffList.add(staff);

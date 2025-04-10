@@ -1,35 +1,51 @@
 package cafe94.system.controller.staff;
 
+import cafe94.system.data.DataSaver;
 import cafe94.system.model.user.Staff;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
+import cafe94.system.utils.SceneManager;
+import javafx.util.Pair;
+import cafe94.system.utils.AppState;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class StaffDetailsPopupController {
 
-    @FXML private Label titleLabel;
 
-    @FXML private TextField firstNameField;
-    @FXML private TextField lastNameField;
-    @FXML private ComboBox<Staff.StaffType> roleComboBox;
-    @FXML private PasswordField passwordField;
-    @FXML private TextField hoursToWorkField;
-    @FXML private TextField totalHoursWorkedField;
+    @FXML
+    private Label titleLabel;
+    @FXML
+    private TextField firstNameField;
+    @FXML
+    private TextField lastNameField;
+    @FXML
+    private ComboBox<Staff.StaffType> roleComboBox;
+    @FXML
+    private PasswordField passwordField;
+    @FXML
+    private TextField hoursToWorkField;
+    @FXML
+    private TextField totalHoursWorkedField;
 
-    private Staff staff;
+    private static final String STAFF_PROFILE_FILE = "src/main/resources/data/staff_profile.txt";
+
+    private Staff currentStaff;
     private boolean saved = false;
     private boolean isNew = false;
 
-    // Used by caller (e.g. ManagerDashboard) to check if Save was clicked
+
     public boolean isSaved() {
         return saved;
     }
 
     public void setup(Staff staff, boolean isNew) {
-        this.staff = staff;
+        this.currentStaff = staff;
         this.isNew = isNew;
 
-        // Set popup title
+
         titleLabel.setText(isNew ? "Add New Staff" : "Edit Staff Details");
 
         // Populate fields
@@ -38,21 +54,25 @@ public class StaffDetailsPopupController {
         roleComboBox.getItems().setAll(Staff.StaffType.values());
         roleComboBox.setValue(staff.getType());
         passwordField.setText(staff.getPassword());
-        hoursToWorkField.setText(String.valueOf(staff.getHoursToWork()));
+        hoursToWorkField.setText(String.valueOf(
+                staff.getHoursToWork().stream().mapToDouble(Double::doubleValue).sum()));
+        totalHoursWorkedField.setText(String.valueOf(
+                staff.getTotalHoursWorked().stream().mapToDouble(Double::doubleValue).sum()));
 
         // Handle totalHoursWorked
         if (isNew) {
             totalHoursWorkedField.setText("0");
             totalHoursWorkedField.setDisable(true); // Disable editing
         } else {
-            totalHoursWorkedField.setText(String.valueOf(staff.getTotalHoursWorked()));
+            totalHoursWorkedField.setText(String.valueOf(
+                    staff.getTotalHoursWorked().stream().mapToDouble(Double::doubleValue).sum()));
             totalHoursWorkedField.setDisable(false);
         }
     }
 
     @FXML
     private void handleCancel() {
-        ((Stage) firstNameField.getScene().getWindow()).close();
+        SceneManager.closePopup();
     }
 
     @FXML
@@ -71,17 +91,23 @@ public class StaffDetailsPopupController {
                 return;
             }
 
-            // Set staff data
-            staff.setFirstName(firstName);
-            staff.setLastName(lastName);
-            staff.setPassword(password);
-            staff.setType(role);
-            staff.setHoursToWork(hoursToWork);
-            staff.setTotalHoursWorked(totalHoursWorked);
+            // Update currentStaff object
+            currentStaff.setFirstName(firstName);
+            currentStaff.setLastName(lastName);
+            currentStaff.setPassword(password);
+            currentStaff.setType(role);
+            List<Double> toWorkList = new ArrayList<>();
+            toWorkList.add(hoursToWork);
+            currentStaff.setHoursToWork(toWorkList);
 
+            List<Double> workedList = new ArrayList<>();
+            workedList.add(totalHoursWorked);
+            currentStaff.setTotalHoursWorked(workedList);
+
+
+            DataSaver.saveStaff(STAFF_PROFILE_FILE, AppState.allStaff);
             saved = true;
 
-            // Show different pop-up msg (add or edit staff)
             String successMessage = isNew
                     ? "Staff member added successfully!"
                     : "Staff details updated successfully.";
@@ -92,10 +118,29 @@ public class StaffDetailsPopupController {
             alert.setContentText(successMessage);
             alert.showAndWait();
 
-            ((Stage) firstNameField.getScene().getWindow()).close();
+            SceneManager.closePopup();
 
         } catch (NumberFormatException e) {
             showAlert("Please enter correct format of working hours (e.g. 40.0)");
+        }
+    }
+
+    @FXML
+    private void handleEditWorkingHours() {
+        Pair<Stage, WorkingHoursPopupController> pair = SceneManager.loadPopup(
+                "staff/WorkingHoursPopup.fxml", "Working Hours", 500, 400);
+
+        if (pair != null) {
+            WorkingHoursPopupController controller = pair.getValue();
+            controller.setStaff(currentStaff);
+            pair.getKey().showAndWait();
+
+            if (controller.hasSaved()) {
+                showInfo("✔ Working hours updated.");
+
+                double totalToWork = currentStaff.getHoursToWork().stream().mapToDouble(Double::doubleValue).sum();
+                hoursToWorkField.setText(String.valueOf(totalToWork));
+            }
         }
     }
 
@@ -103,6 +148,14 @@ public class StaffDetailsPopupController {
     private void showAlert(String msg) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Input Error");
+        alert.setHeaderText(null);
+        alert.setContentText(msg);
+        alert.showAndWait();
+    }
+
+    private void showInfo(String msg) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Success");
         alert.setHeaderText(null);
         alert.setContentText(msg);
         alert.showAndWait();

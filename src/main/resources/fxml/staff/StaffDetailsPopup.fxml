@@ -1,40 +1,82 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
 
-<GridPane hgap="10" vgap="10"
-          stylesheets="@../style/style.css"
-          xmlns="http://javafx.com/javafx/23.0.1"
-          xmlns:fx="http://javafx.com/fxml"
-          fx:controller="cafe94.system.controller.staff.StaffDetailsPopupController">
+<GridPane alignment="CENTER" hgap="10" prefHeight="520.0" prefWidth="600" stylesheets="@../style/style.css" vgap="10" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cafe94.system.controller.staff.StaffDetailsPopupController">
 
     <!-- Dynamic Title -->
-    <Label fx:id="titleLabel" styleClass="section-title" GridPane.columnSpan="2"/>
+    <Label fx:id="titleLabel" styleClass="section-title" GridPane.columnSpan="2" />
 
-    <Label text="First Name:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
-    <TextField fx:id="firstNameField" promptText="First Name" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+    <Label text="First Name:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+    <TextField fx:id="firstNameField" promptText="First Name" GridPane.columnIndex="1" GridPane.rowIndex="1" />
 
-    <Label text="Last Name:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
-    <TextField fx:id="lastNameField" promptText="Last Name" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+    <Label text="Last Name:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+    <TextField fx:id="lastNameField" promptText="Last Name" GridPane.columnIndex="1" GridPane.rowIndex="2" />
 
-    <Label text="Role:" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
-    <ComboBox fx:id="roleComboBox" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+    <Label text="Role:" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+    <ComboBox fx:id="roleComboBox" GridPane.columnIndex="1" GridPane.rowIndex="3" />
 
-    <Label text="Password:" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
-    <PasswordField fx:id="passwordField" promptText="Password" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+    <Label text="Password:" GridPane.columnIndex="0" GridPane.rowIndex="4" />
+    <PasswordField fx:id="passwordField" promptText="Password" GridPane.columnIndex="1" GridPane.rowIndex="4" />
 
-    <Label text="Hours to Work:" GridPane.rowIndex="5" GridPane.columnIndex="0"/>
-    <TextField fx:id="hoursToWorkField" promptText="40hrs (Default)" GridPane.rowIndex="5" GridPane.columnIndex="1"/>
+    <Label text="🔒 Total Planned Hours:" GridPane.columnIndex="0" GridPane.rowIndex="5" />
+    <TextField fx:id="hoursToWorkField" editable="false" GridPane.columnIndex="1" GridPane.rowIndex="5" />
 
-    <Label text="Total Hours Worked:" GridPane.rowIndex="6" GridPane.columnIndex="0"/>
-    <TextField fx:id="totalHoursWorkedField" GridPane.rowIndex="6" GridPane.columnIndex="1"/>
+    <Label text="🔒 Total Worked Hours:" GridPane.columnIndex="0" GridPane.rowIndex="6" />
+    <TextField fx:id="totalHoursWorkedField" editable="false" GridPane.columnIndex="1" GridPane.rowIndex="6" />
 
-    <HBox spacing="15" alignment="CENTER" GridPane.rowIndex="8" GridPane.columnSpan="2">
-        <Button text="Cancel" prefWidth="100" onAction="#handleCancel"/>
-        <Button text="Save" prefWidth="100" onAction="#handleSave"/>
-
+    <HBox alignment="CENTER_LEFT" spacing="10">
+        <Label text=" " />
     </HBox>
+
+
+        <Button onAction="#handleEditWorkingHours" text="View/Edit Working Hours" GridPane.columnIndex="1" GridPane.rowIndex="15" />
+
+     <Button text="Cancel" onAction="#handleCancel" prefWidth="100" GridPane.rowIndex="15" />
+     <Button onAction="#handleSave" prefWidth="100" text="Save" GridPane.columnIndex="15" GridPane.rowIndex="15" />
+   <columnConstraints>
+      <ColumnConstraints />
+      <ColumnConstraints />
+      <ColumnConstraints />
+      <ColumnConstraints />
+      <ColumnConstraints />
+      <ColumnConstraints />
+      <ColumnConstraints />
+      <ColumnConstraints />
+      <ColumnConstraints />
+      <ColumnConstraints />
+      <ColumnConstraints />
+      <ColumnConstraints />
+      <ColumnConstraints />
+      <ColumnConstraints />
+      <ColumnConstraints />
+      <ColumnConstraints />
+   </columnConstraints>
+   <rowConstraints>
+      <RowConstraints />
+      <RowConstraints />
+      <RowConstraints />
+      <RowConstraints />
+      <RowConstraints />
+      <RowConstraints />
+      <RowConstraints />
+      <RowConstraints />
+      <RowConstraints />
+      <RowConstraints />
+      <RowConstraints />
+      <RowConstraints />
+      <RowConstraints />
+      <RowConstraints />
+      <RowConstraints />
+      <RowConstraints />
+   </rowConstraints>
 
 </GridPane>

@@ -60,12 +60,12 @@ public class DeliveryOrder extends Order {
         return String.format("%d;%d;%s;%s;;%s;%s;%d;%s;%s",
                 getOrderID(),
                 getCustomerID(),
-                getOrderType(),
+                getOrderType().name(),
                 isCompleted(),
                 deliveryAddress == null ? "" : deliveryAddress,
                 estimatedDeliveryTime == null ? "" : estimatedDeliveryTime,
                 assignedStaffDriverID,
                 itemsToString(),
-                getStatus());
+                getStatus().name());
     }
 }

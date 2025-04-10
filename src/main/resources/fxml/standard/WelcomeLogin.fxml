@@ -23,7 +23,9 @@
         <PasswordField fx:id="passwordField" promptText="Enter Password" maxWidth="250"/>
 
         <!-- Staff Role ComboBox -->
-        <ComboBox fx:id="staffComboBox" promptText="Select staff profile" maxWidth="250"/>
+        <ComboBox fx:id="staffComboBox" promptText="Select Staff Profile" maxWidth="250"/>
+
+        <CheckBox fx:id="manualLoginCheckBox" text="Manual Login" onAction="#handleToggleLoginMode"/>
 
         <!-- Login Button -->
         <Button text="Login" onAction="#handleLogin"/>

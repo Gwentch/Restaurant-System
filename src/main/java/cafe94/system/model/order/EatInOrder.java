@@ -29,9 +29,9 @@ public class EatInOrder extends Order {
         return String.format("%d;%d;%s;%s;;;;-1;%s;%s",
                 getOrderID(),
                 getCustomerID(),
-                getOrderType(),
+                getOrderType().name(),
                 isCompleted(),
                 itemsToString(),
-                getStatus());
+                getStatus().name());
     }
 }

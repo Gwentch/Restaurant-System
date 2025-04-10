@@ -1,9 +1,11 @@
 package cafe94.system.model.user;
 
+import java.util.List;
+
 public class Driver extends Staff {
 
     public Driver(int id, String firstName, String lastName, String password,
-                  double hoursToWork, double totalHoursWorked) {
+                  List<Double> hoursToWork, List<Double> totalHoursWorked) {
         super(id, firstName, lastName, StaffType.DRIVER, password, hoursToWork, totalHoursWorked);
     }
 

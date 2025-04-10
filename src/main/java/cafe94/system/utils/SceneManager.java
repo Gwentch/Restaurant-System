@@ -110,19 +110,30 @@ public class SceneManager {
             T controller = loader.getController();
 
             Stage popupStage = new Stage();
-            popupStage.setTitle(STR."Cafe94 - \{title}");
+            popupStage.setTitle("Cafe94 - " +title);
             popupStage.initModality(Modality.APPLICATION_MODAL);
             popupStage.setScene(new Scene(root, width, height));
             popupStage.setResizable(false);
             popupStage.centerOnScreen();
             popupStage.sizeToScene();
 
+            currentPopupStage = popupStage;
             return new Pair<>(popupStage, controller);
         } catch (IOException e) {
             showError("Popup Failed", "Could not load popup: " + fxmlPath);
             return null;
         }
     }
+
+    private static Stage currentPopupStage = null;
+
+    public static void closePopup() {
+        if (currentPopupStage != null) {
+            currentPopupStage.close();
+            currentPopupStage = null;
+        }
+    }
+
 
     /**
      * Helper

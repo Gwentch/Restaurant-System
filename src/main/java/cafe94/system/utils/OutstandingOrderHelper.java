@@ -45,7 +45,7 @@ public class OutstandingOrderHelper {
                 }
                 if (orderTypeCol != null) {
                     orderTypeCol.setCellValueFactory(data ->
-                            new SimpleStringProperty(OrderType.getDisplayType(data.getValue().getOrderType())));
+                            new SimpleStringProperty(data.getValue().getOrderType().getDisplayName()));
                 }
                 if (statusCol != null) {
                     statusCol.setCellValueFactory(data ->
@@ -89,7 +89,7 @@ public class OutstandingOrderHelper {
                 }
                 if (orderTypeCol != null) {
                     orderTypeCol.setCellValueFactory(data ->
-                            new SimpleStringProperty(OrderType.getDisplayType(data.getValue().getOrderType())));
+                            new SimpleStringProperty(data.getValue().getOrderType().getDisplayName()));
                 }
                 if (addressCol != null) {
                     addressCol.setCellValueFactory(data -> {

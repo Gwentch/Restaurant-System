@@ -68,12 +68,25 @@ public class ManagerDashboardController {
     @FXML
     public void initialize() {
         // Staff table columns
-        idColumn.setCellValueFactory(data -> new SimpleIntegerProperty(data.getValue().getId()).asObject());
-        firstNameColumn.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getFirstName()));
-        lastNameColumn.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getLastName()));
-        roleColumn.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getRole()));
-        hoursToWorkCol.setCellValueFactory(data -> new SimpleDoubleProperty(data.getValue().getHoursToWork()).asObject());
-        totalHoursWorkedCol.setCellValueFactory(data -> new SimpleDoubleProperty(data.getValue().getTotalHoursWorked()).asObject());
+        idColumn.setCellValueFactory(data ->
+                new SimpleIntegerProperty(data.getValue().getId()).asObject());
+        firstNameColumn.setCellValueFactory(data ->
+                new SimpleStringProperty(data.getValue().getFirstName()));
+        lastNameColumn.setCellValueFactory(data ->
+                new SimpleStringProperty(data.getValue().getLastName()));
+        roleColumn.setCellValueFactory(data ->
+                new SimpleStringProperty(data.getValue().getRole()));
+        hoursToWorkCol.setCellValueFactory(data ->
+                new SimpleDoubleProperty(
+                        data.getValue().getHoursToWork().stream().mapToDouble(Double::doubleValue).sum()).asObject()
+        );
+
+        totalHoursWorkedCol.setCellValueFactory(data ->
+                new SimpleDoubleProperty(
+                        data.getValue().getTotalHoursWorked().stream().mapToDouble(Double::doubleValue).sum()
+                ).asObject()
+        );
+
 
         removeStaffButton.disableProperty().bind(staffTable.getSelectionModel().selectedItemProperty().isNull());
 
@@ -103,7 +116,7 @@ public class ManagerDashboardController {
         Pair<Stage, StaffDetailsPopupController> popup = SceneManager.loadPopup(
                 "staff/StaffDetailsPopup.fxml",
                 "Add New Staff",
-                350, 350);
+                600, 500);
 
         if (popup == null) {
             return;
@@ -130,19 +143,26 @@ public class ManagerDashboardController {
         Pair<Stage, StaffDetailsPopupController> popup = SceneManager.loadPopup(
                 "staff/StaffDetailsPopup.fxml",
                 "Edit Staff",
-                350, 350);
+                600, 500);
 
         if (popup == null) {
             return;
         }
 
-        popup.getValue().setup(selected, false);
+        StaffDetailsPopupController controller = popup.getValue();
+        controller.setup(selected, false); // Setup staff details
+
+        // Show popup window and wait until it closes
         popup.getKey().showAndWait();
 
-        if (popup.getValue().isSaved()) {
-            staffTable.refresh();
-            syncStaffListToAppState();
-            DataSaver.saveStaff(STAFF_PROFILE_FILE, staffList);
+        // After closing the popup, check if saved
+        if (controller.isSaved()) {
+            staffTable.refresh();  // update display
+            syncStaffListToAppState();  // update shared data
+            DataSaver.saveStaff(STAFF_PROFILE_FILE, staffList);  // persist to file
+            System.out.println("✔ Staff edited and saved.");
+        } else {
+            System.out.println("Edit was cancelled or not saved.");
         }
     }
 

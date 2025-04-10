@@ -1,10 +1,15 @@
 Margherita Pizza;18.99
 Cheeseburger;7.49
 Caesar Salad;6.99
-Carbonara;7.49
+Grilled Salmon;11.49
+Mushroom Risotto;7.99
+Lasagna;8.99
 Coke;1.99
 Cappuccino;3.59
 Mocha;3.59
+Apple Juice;3.59
+Cranberry Juice;3.59
 Cheesecake;6.99
 Brownie;6.99
 Caramel Macaron;8.49
+Chocolate Fudge;6.49

@@ -151,7 +151,7 @@ public class ReportHelper {
         List<Map.Entry<String, Double>> topStaff = allStaff.stream()
                 .collect(Collectors.toMap(
                         Staff::getFullName,
-                        Staff::getTotalHoursWorked
+                        staff -> staff.getTotalHoursWorked().stream().mapToDouble(Double::doubleValue).sum()
                 ))
                 .entrySet().stream()
                 .sorted((a, b) -> Double.compare(b.getValue(), a.getValue()))

@@ -39,10 +39,10 @@ public class TakeawayOrder extends Order {
         return String.format("%d;%d;%s;%s;%s;;;;-1;%s;%s",
                 getOrderID(),
                 getCustomerID(),
-                getOrderType(),
+                getOrderType().name(),
                 isCompleted(),
                 pickupTime == null ? "" : pickupTime,
                 itemsToString(),
-                getStatus());
+                getStatus().name());
     }
 }

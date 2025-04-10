@@ -7,10 +7,7 @@ import cafe94.system.model.order.OrderType;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -148,27 +145,30 @@ public class OrderManaged {
     public static Order parseOrder(String line, List<MenuItem> menuItems) {
         try {
             String[] parts = line.split(";", -1);
-            if (parts.length < 10) return null;
+            if (parts.length != 10) {
+                System.out.println("Skipped line (expected 10 fields): " + Arrays.toString(parts));
+                return null;
+            }
 
             int orderID = Integer.parseInt(parts[0]);
             int customerID = Integer.parseInt(parts[1]);
             OrderType type = OrderType.valueOf(parts[2]);
             boolean completed = Boolean.parseBoolean(parts[3]);
-            String pickUpTime = parts[4];
-            String deliveryAddress = parts[5];
-            String estimatedDeliveryTime = parts[6];
-            int assignedDriverID = parts[7].isEmpty() ? -1 : Integer.parseInt(parts[7].trim());
+
+            String pickupTime = parts[4].trim();
+            String deliveryAddress = parts[5].trim();
+            String estimatedTime = parts[6].trim();
+            int assignedDriverID = parts[7].isEmpty() ? -1 : Integer.parseInt(parts[7]);
 
             // Parse items
             List<OrderItem> itemList = new ArrayList<>();
             if (!parts[8].isEmpty()) {
                 String[] itemParts = parts[8].split(",");
                 for (String itemData : itemParts) {
-                    String[] itemSplit = itemData.split("#");
+                    String[] itemSplit = itemData.trim().split("#");
                     if (itemSplit.length == 2) {
                         String itemName = itemSplit[0].trim();
                         int quantity = Integer.parseInt(itemSplit[1].trim());
-
                         MenuItem matchedItem = findMenuItemByName(itemName, menuItems);
                         if (matchedItem != null) {
                             itemList.add(new OrderItem(matchedItem, quantity));
@@ -181,11 +181,10 @@ public class OrderManaged {
 
             OrderStatus status = OrderStatus.valueOf(parts[9].trim());
 
-            // Create order based on type
             return switch (type) {
                 case EAT_IN -> new EatInOrder(orderID, customerID, completed, itemList, status);
-                case TAKEAWAY -> new TakeawayOrder(orderID, customerID, completed, itemList, status, pickUpTime);
-                case DELIVERY -> new DeliveryOrder(orderID, customerID, completed, itemList, status, deliveryAddress, estimatedDeliveryTime, assignedDriverID);
+                case TAKEAWAY -> new TakeawayOrder(orderID, customerID, completed, itemList, status, pickupTime);
+                case DELIVERY -> new DeliveryOrder(orderID, customerID, completed, itemList, status, deliveryAddress, estimatedTime, assignedDriverID);
             };
 
         } catch (Exception e) {

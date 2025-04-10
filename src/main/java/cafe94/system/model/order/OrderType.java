@@ -17,8 +17,7 @@ public enum OrderType {
         this.displayName = displayName;
     }
 
-    @Override
-    public String toString() {
+    public String getDisplayName() {
         return displayName;
     }
 
@@ -34,10 +33,5 @@ public enum OrderType {
             case TAKEAWAY -> OrderStatus.READY_TO_PICKUP;
             case DELIVERY -> OrderStatus.READY_TO_DELIVER;
         };
-    }
-
-
-    public static String getDisplayType(OrderType type) {
-        return type.toString(); // or return type.displayName; either works
     }
 }

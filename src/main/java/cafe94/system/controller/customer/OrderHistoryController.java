@@ -48,7 +48,7 @@ public class OrderHistoryController {
     @FXML
     private void initialize() {
         orderIdColumn.setCellValueFactory(data -> new SimpleIntegerProperty(data.getValue().getOrderID()).asObject());
-        orderTypeColumn.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getOrderType().toString()));
+        orderTypeColumn.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getOrderType().name()));
         orderTotalColumn.setCellValueFactory(data -> new SimpleDoubleProperty(data.getValue().getTotalAmount()).asObject());
 
         itemNameColumn.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getMenuItem().getName()));
