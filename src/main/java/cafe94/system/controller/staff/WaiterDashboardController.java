@@ -83,7 +83,7 @@ public class WaiterDashboardController {
         customerComboBox.setConverter(new StringConverter<>() {
             @Override
             public String toString(Customer c) {
-                return c == null ? "" :  " [ID: " + c.getId() + "]"+ c.getFullName();
+                return c == null ? "" :  "[ID: " + c.getId() + "] "+ c.getFullName();
             }
             @Override
             public Customer fromString(String s) { return null; }

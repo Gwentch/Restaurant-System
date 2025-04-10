@@ -42,7 +42,7 @@
                      <HBox.margin>
                         <Insets top="10.0" />
                      </HBox.margin></Label>
-                <ComboBox fx:id="customerComboBox" prefWidth="150" />
+                <ComboBox fx:id="customerComboBox" prefWidth="170" />
 
                 <Label text="Order Type:" />
                 <ChoiceBox fx:id="orderType" prefWidth="100" />

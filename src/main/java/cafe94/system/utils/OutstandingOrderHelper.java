@@ -49,7 +49,7 @@ public class OutstandingOrderHelper {
                 }
                 if (statusCol != null) {
                     statusCol.setCellValueFactory(data ->
-                            new SimpleStringProperty(data.getValue().getStatus().toString()));
+                            new SimpleStringProperty(data.getValue().getStatus().getDisplayName()));
                 }
             }
 
@@ -73,7 +73,7 @@ public class OutstandingOrderHelper {
 
                     if (statusCol != null) {
                         statusCol.setCellValueFactory(data ->
-                                new SimpleStringProperty(data.getValue().getStatus().toString()));
+                                new SimpleStringProperty(data.getValue().getStatus().getDisplayName()));
                     }
                 }
             }
@@ -102,7 +102,7 @@ public class OutstandingOrderHelper {
 
                     if (statusCol != null) {
                         statusCol.setCellValueFactory(data ->
-                                new SimpleStringProperty(data.getValue().getStatus().toString()));
+                                new SimpleStringProperty(data.getValue().getStatus().getDisplayName()));
                     }
                 }
             }
