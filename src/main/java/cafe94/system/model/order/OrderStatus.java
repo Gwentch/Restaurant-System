@@ -1,7 +1,10 @@
 package cafe94.system.model.order;
 
 /**
- * Represents the current status of an order in the Cafe94 system.
+ * Enum representing the current status of an order in the Cafe94 system.
+ * <p>
+ * Used to track the progress of Eat-In, Takeaway, and Delivery orders.
+ * </p>
  */
 public enum OrderStatus {
     PENDING_PREP("Waiting for Preparation"),

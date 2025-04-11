@@ -15,16 +15,24 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.util.StringConverter;
 import cafe94.system.model.menu.MenuItem;
-
-
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Controller for the Waiter Dashboard in the Cafe94 system.
+ * <p>
+ * This dashboard allows waiters to:
+ * <ul>
+ *   <li>Place eat-in orders on behalf of customers</li>
+ *   <li>View and manage outstanding orders (approve for delivery order only)</li>
+ *   <li>Manage customer bookings by approving them</li>
+ * </ul>
+ *
+ * Integrates with {@link AppState}, {@link OutstandingOrderHelper}, and {@link DataSaver}
+ * to support order filtering, menu item selection, and stateful UI updates.
+ */
 public class WaiterDashboardController {
 
-
-    public Button backButton;
     @FXML private Label eatInOrderTotalLabel;
     @FXML private ComboBox<Customer> customerComboBox;
     @FXML private ChoiceBox<OrderType> orderType;
@@ -64,7 +72,12 @@ public class WaiterDashboardController {
     private OrderManaged orderManaged;
     private List<Booking> bookings;
 
-    // Called from Main App to inject data
+    /**
+     * Sets up the Waiter Dashboard with the shared order manager and populates
+     * order tables. Also shows the logged-in staff member's name.
+     *
+     * @param orderManaged The order manager containing all outstanding orders.
+     */
     public void setup(OrderManaged orderManaged) {
         this.orderManaged = orderManaged;
 
@@ -75,6 +88,13 @@ public class WaiterDashboardController {
         loadOrders("My Role's Orders");
     }
 
+    /**
+     * Initializes the Waiter Dashboard UI components.
+     * <p>
+     * Sets up all table views, combo boxes, listeners, and default values.
+     * This method is automatically called by JavaFX after the FXML is loaded.
+     * </p>
+     */
     @FXML
     private void initialize() {
         loggedInAsLabel.setText("Logged in as: " + AppState.loggedInStaff.getFullName());
@@ -177,6 +197,10 @@ public class WaiterDashboardController {
         refreshBasket();
     }
 
+    /**
+     * Adds the selected regular menu item and specified quantity to the basket.
+     * Refreshes the basket view to reflect the new item.
+     */
     @FXML
     private void handleAddMenu() {
         MenuItem selected = menuTable.getSelectionModel().getSelectedItem();
@@ -187,6 +211,10 @@ public class WaiterDashboardController {
         }
     }
 
+    /**
+     * Adds the selected daily special item and specified quantity to the basket.
+     * Refreshes the basket view to reflect the new item.
+     */
     @FXML
     private void handleAddSpecial() {
         MenuItem selected = specialsTable.getSelectionModel().getSelectedItem();
@@ -197,6 +225,9 @@ public class WaiterDashboardController {
         }
     }
 
+    /**
+     * Removes the selected item from the basket and updates the basket view.
+     */
     @FXML
     private void handleRemoveSelected() {
         OrderItem selected = basketTable.getSelectionModel().getSelectedItem();
@@ -206,6 +237,10 @@ public class WaiterDashboardController {
         }
     }
 
+    /**
+     * Confirms and places an Eat-In order for the selected customer
+     * using the current basket items. Clears the basket after saving.
+     */
     @FXML
     private void handleConfirmOrder() {
         Customer selectedCustomer = customerComboBox.getValue();
@@ -217,21 +252,28 @@ public class WaiterDashboardController {
         Order newOrder = new EatInOrder(selectedCustomer.getId());
         newOrder.getItems().addAll(basketItems);
         AppState.orderManaged.addOrder(newOrder);
-        DataSaver.saveOrders("src/main/resources/data/orders.txt", AppState.orderManaged.getAllOrders());
+        DataSaver.saveOrders(ORDERS_FILE, AppState.orderManaged.getAllOrders());
 
         showInfo("✔ Eat-In Order placed successfully for customer ID: " + selectedCustomer.getId());
         basketItems.clear();
         refreshBasket();
     }
 
-
+    /**
+     * Refreshes the basket TableView and updates the total label based on current basket items.
+     */
     private void refreshBasket() {
         basketTable.setItems(FXCollections.observableArrayList(basketItems));
         double total = basketItems.stream().mapToDouble(OrderItem::getSubtotal).sum();
         eatInOrderTotalLabel.setText(String.format("Total: £%.2f", total));
     }
 
-
+    /**
+     * Loads and filters outstanding orders based on the selected filter type.
+     * Waiters typically see either all outstanding orders or those relevant to their role.
+     *
+     * @param filterType The filter criteria selected in the UI.
+     */
     private void loadOrders(String filterType) {
         if (orderManaged == null) {
             return;
@@ -250,6 +292,10 @@ public class WaiterDashboardController {
 
     }
 
+    /**
+     * Approves a delivery order that is currently in {@code PENDING_APPROVAL} status.
+     * Once approved, its status is updated to {@code PENDING_PREP} and saved to file.
+     */
     private void handleApprove() {
         Order selected = ordersTable.getSelectionModel().getSelectedItem();
         if (selected == null || selected.getStatus() != OrderStatus.PENDING_APPROVAL) {
@@ -263,6 +309,11 @@ public class WaiterDashboardController {
         loadOrders(filterComboBox.getValue());
     }
 
+    /**
+     * Handles approval of a selected customer booking.
+     * If the booking is not already approved, updates its status to APPROVED,
+     * saves the changes, and refreshes the booking table.
+     */
     @FXML
     private void handleBookingApprove() {
         Booking selected = bookingTable.getSelectionModel().getSelectedItem();
@@ -283,17 +334,26 @@ public class WaiterDashboardController {
         showInfo("✔ Booking approved.");
     }
 
+    /**
+     * Handles the logout action for the waiter.
+     * Redirects the user back to the welcome login screen.
+     */
     @FXML
     private void handleLogout() {
         SceneManager.switchTo("standard/WelcomeLogin.fxml");
     }
 
+    /**
+     * Clears selection across multiple tables to avoid accidental multi-selection.
+     *
+     * @param tables Tables to clear selection from.
+     */
+    // Helper method
     private void clearOtherSelections(TableView<?>... tables) {
         for (TableView<?> table : tables) {
             table.getSelectionModel().clearSelection();
         }
     }
-
 
     private void showInfo(String msg) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);

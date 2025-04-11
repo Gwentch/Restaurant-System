@@ -12,23 +12,25 @@ import cafe94.system.utils.AppState;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Controller for the Staff Details popup window in the Cafe94 system.
+ * <p>
+ * This popup allows the manager to add a new staff member or edit details
+ * of an existing one. Fields include name, role, password, and working hours.
+ * </p>
+ *
+ * The controller also allows launching a separate popup to manage weekly
+ * working hours and ensures input validation before saving.
+ */
 public class StaffDetailsPopupController {
 
-
-    @FXML
-    private Label titleLabel;
-    @FXML
-    private TextField firstNameField;
-    @FXML
-    private TextField lastNameField;
-    @FXML
-    private ComboBox<Staff.StaffType> roleComboBox;
-    @FXML
-    private PasswordField passwordField;
-    @FXML
-    private TextField hoursToWorkField;
-    @FXML
-    private TextField totalHoursWorkedField;
+    @FXML private Label titleLabel;
+    @FXML private TextField firstNameField;
+    @FXML private TextField lastNameField;
+    @FXML private ComboBox<Staff.StaffType> roleComboBox;
+    @FXML private PasswordField passwordField;
+    @FXML private TextField hoursToWorkField;
+    @FXML private TextField totalHoursWorkedField;
 
     private static final String STAFF_PROFILE_FILE = "src/main/resources/data/staff_profile.txt";
 
@@ -37,14 +39,16 @@ public class StaffDetailsPopupController {
     private boolean isNew = false;
 
 
-    public boolean isSaved() {
-        return saved;
-    }
-
+    /**
+     * Sets up the popup view with an existing or new staff member's details.
+     * Fields are pre-filled for editing, or initialized for adding.
+     *
+     * @param staff The staff member being added or edited.
+     * @param isNew true if adding a new staff member; false if editing.
+     */
     public void setup(Staff staff, boolean isNew) {
         this.currentStaff = staff;
         this.isNew = isNew;
-
 
         titleLabel.setText(isNew ? "Add New Staff" : "Edit Staff Details");
 
@@ -70,6 +74,19 @@ public class StaffDetailsPopupController {
         }
     }
 
+    /**
+     * Returns whether the staff details were successfully saved.
+     *
+     * @return true if saved; false otherwise
+     */
+    public boolean isSaved() {
+        return saved;
+    }
+
+    /**
+     * Handles the Cancel button action.
+     * Closes the current popup window without saving any changes.
+     */
     @FXML
     private void handleCancel() {
         System.out.println("Cancel clicked — using direct stage close");
@@ -77,7 +94,14 @@ public class StaffDetailsPopupController {
         stage.close();
     }
 
-
+    /**
+     * Handles the Save button action.
+     * Validates user input, updates the staff object, saves the data to file,
+     * and closes the popup if input is valid.
+     * <p>
+     * Displays alerts if the input is incomplete or incorrectly formatted.
+     * </p>
+     */
     @FXML
     private void handleSave() {
         try {
@@ -128,6 +152,11 @@ public class StaffDetailsPopupController {
         }
     }
 
+    /**
+     * Handles the Edit Working Hours button action.
+     * Opens the working hours popup to allow detailed editing of daily hours.
+     * Updates the total "hours to work" in the main form if changes are saved.
+     */
     @FXML
     private void handleEditWorkingHours() {
         Pair<Stage, WorkingHoursPopupController> pair = SceneManager.loadPopup(
@@ -147,7 +176,7 @@ public class StaffDetailsPopupController {
         }
     }
 
-
+    // Helper method
     private void showAlert(String msg) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Input Error");

@@ -5,12 +5,16 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * Staff model for Cafe94
+ * Abstract base model for all staff roles in Cafe94 (Manager, Chef, Waiter, Driver).
+ * Stores working hours and staff type and supports persistence to and from file.
  */
 public class Staff extends User {
 
     private static int nextStaffIdCounter = 1;
 
+    /**
+     * Enum representing different types of staff roles in the system.
+     */
     public enum StaffType {
         MANAGER, WAITER, DRIVER, CHEF
     }
@@ -19,7 +23,9 @@ public class Staff extends User {
     private List<Double> hoursToWork;
     private List<Double> totalHoursWorked;
 
-    // Constructor for manager creating new staff
+    /**
+     * Constructs a new Staff member (for in-app creation).
+     */
     public Staff(String firstName, String lastName, StaffType type, String password) {
         super(nextStaffIdCounter++, firstName, lastName, password);
         this.type = type;
@@ -27,7 +33,9 @@ public class Staff extends User {
         this.totalHoursWorked = new ArrayList<>();
     }
 
-    // Constructor when loading from file
+    /**
+     * Constructs a staff member loaded from file (without hours).
+     */
     public Staff(int id, String firstName, String lastName, StaffType type, String password) {
         super(id, firstName, lastName, password);
         this.type = type;
@@ -36,7 +44,9 @@ public class Staff extends User {
         updateStaffIdCounter(id);
     }
 
-    // Overloaded constructor to load hours
+    /**
+     * Constructs a fully loaded staff member with working hours (from file).
+     */
     public Staff(int id, String firstName, String lastName, StaffType type, String password,
                  List<Double> hoursToWork, List<Double> totalHoursWorked) {
         super(id, firstName, lastName, password);
@@ -46,7 +56,9 @@ public class Staff extends User {
         updateStaffIdCounter(id);
     }
 
-    // Static counter update
+    /**
+     * Updates the static ID counter when loading from file.
+     */
     public static void updateStaffIdCounter(int id) {
         if (id >= nextStaffIdCounter) {
             nextStaffIdCounter = id + 1;
@@ -101,6 +113,9 @@ public class Staff extends User {
         return "[ID: " + id + "] " + getFullName() + " (" + type.name() + ")";
     }
 
+    /**
+     * Converts the staff member's data to a file-ready format.
+     */
     @Override
     public String toFileString() {
         return String.format("%d;%s;%s;%s;%s;%s;%s",
@@ -120,6 +135,9 @@ public class Staff extends User {
                 .collect(Collectors.joining(","));
     }
 
+    /**
+     * Parses a string of comma-separated doubles into a List.
+     */
     public static List<Double> parseHoursList(String str) {
         List<Double> hours = new ArrayList<>();
         if (str == null || str.isBlank()) return hours;

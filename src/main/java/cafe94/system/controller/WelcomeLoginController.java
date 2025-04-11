@@ -17,7 +17,22 @@ import javafx.event.ActionEvent;
 import javafx.scene.image.ImageView;
 import javafx.util.StringConverter;
 
-
+/**
+ * Controller for the Welcome Login screen in the Cafe94 system.
+ * <p>
+ * Handles both staff and customer authentication, with support for
+ * manual customer ID input or staff profile selection. Navigates users to
+ * the appropriate dashboard upon successful login.
+ * </p>
+ *
+ * Features:
+ * <ul>
+ *   <li>Login support for all staff roles and customers</li>
+ *   <li>Dynamic population of existing staff profile with IDs</li>
+ *   <li>Toggle between manual login mode(Customer) and selection-based login(Staff)</li>
+ *   <li>Customer registration navigation</li>
+ * </ul>
+ */
 public class WelcomeLoginController {
 
     @FXML private ImageView logoCafe;
@@ -26,8 +41,13 @@ public class WelcomeLoginController {
     @FXML private ComboBox<Staff> staffComboBox;
     @FXML private CheckBox manualLoginCheckBox;
 
+
+    /**
+     * Initializes the login screen with available staff profiles and logo image.
+     * Sets up listeners for login mode toggling and staff selection behavior.
+     */
     @FXML
-    public void initialize() {
+    private void initialize() {
         idField.setDisable(true);
         // Load customerList and staff
         AppState.allCustomer = DataLoader.loadCustomers("src/main/resources/data/customer.txt");
@@ -73,6 +93,13 @@ public class WelcomeLoginController {
             }
         });
     }
+
+    /**
+     * Handles login attempts for staff and customers.
+     * Navigates to the corresponding dashboard if credentials are valid.
+     *
+     * @param event The login button click event.
+     */
     @FXML
     private void handleLogin(ActionEvent event) {
         String id = idField.getText().trim();
@@ -88,7 +115,6 @@ public class WelcomeLoginController {
             if (String.valueOf(staff.getId()).equals(id) && staff.getPassword().equals(password)) {
                 AppState.loggedInStaff = staff;
                 System.out.println("Login successful as Staff");
-
 
                 switch (staff.getType()) {
                     case CHEF:
@@ -128,7 +154,6 @@ public class WelcomeLoginController {
 
                 SceneManager.switchToWithControllerAndSetup("customer/CustomerDashboard.fxml",
                         (CustomerDashboardController c) ->
-
                                 c.setup(AppState.loggedInCustomer, AppState.orderManaged, AppState.menuItems, AppState.dailySpecials));
                 return;
             }
@@ -138,6 +163,9 @@ public class WelcomeLoginController {
     }
 
 
+    /**
+     * Toggles between manual ID input and ComboBox profile selection mode for staff.
+     */
     @FXML
     private void handleToggleLoginMode() {
         boolean isManual = manualLoginCheckBox.isSelected();
@@ -159,10 +187,16 @@ public class WelcomeLoginController {
         }
     }
 
+    /**
+     * Navigates the user to the customer registration screen.
+     *
+     * @param event The register button click event.
+     */
     @FXML
     private void handleRegister(ActionEvent event) {
         SceneManager.switchTo("customer/RegisterCustomer.fxml");
     }
+
 
     private void showAlert(String message) {
         Alert alert = new Alert(Alert.AlertType.WARNING);

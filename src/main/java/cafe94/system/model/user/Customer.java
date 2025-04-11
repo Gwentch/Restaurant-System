@@ -4,13 +4,24 @@ import cafe94.system.model.order.Order;
 import java.util.ArrayList;
 import java.util.List;
 
-
+/**
+ * Represents a customer in the Cafe94 system.
+ * Each customer has a unique ID, personal details, address, and order history.
+ */
 public class Customer extends User {
     private static int customerIdCounter = 1;   // Auto-increment customer ID
     private final String address;
     private final List<Order> orderHistory = new ArrayList<>();
 
-    // Constructor for loading existing customerList from file
+    /**
+     * Constructor for loading an existing customer from file.
+     *
+     * @param id        the customer's unique ID
+     * @param firstName the customer's first name
+     * @param lastName  the customer's last name
+     * @param address   the customer's address
+     * @param password  the customer's password
+     */
     public Customer(int id, String firstName, String lastName, String address, String password) {
         super(id, firstName, lastName, password);
         this.address = address;
@@ -21,13 +32,24 @@ public class Customer extends User {
         }
     }
 
-    // Constructor for new customer registration
+    /**
+     * Constructor for new customer registration.
+     *
+     * @param firstName the customer's first name
+     * @param lastName  the customer's last name
+     * @param address   the customer's address
+     * @param password  the customer's password
+     */
     public Customer(String firstName, String lastName, String address, String password) {
         super(customerIdCounter++, firstName, lastName, password);
         this.address = address;
     }
 
-    // Set the correct next ID after existing customerList
+    /**
+     * Sets the customer ID counter explicitly (used when loading from file).
+     *
+     * @param nextId the next available customer ID
+     */
     public static void setCustomerIdCounter(int nextId) {
         customerIdCounter = nextId;
     }
@@ -36,21 +58,6 @@ public class Customer extends User {
         return address;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public List<Order> getOrderHistory() {
-        return orderHistory;
-    }
-
-    public void addOrder(Order order) {
-        orderHistory.add(order);
-    }
 
     @Override
     public String getRole() {

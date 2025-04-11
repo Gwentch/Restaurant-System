@@ -1,9 +1,6 @@
 package cafe94.system.model.order;
 
 import cafe94.system.model.menu.MenuItem;
-import cafe94.system.model.order.Order;
-import cafe94.system.model.order.OrderType;
-
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -43,15 +40,6 @@ public class OrderManaged {
         return Collections.unmodifiableList(orders);
     }
 
-    /**
-     * Finds an order by its ID.
-     *
-     * @param orderId the ID of the order
-     * @return Optional containing the order if found, empty otherwise
-     */
-    public Optional<Order> findById(int orderId) {
-        return orders.stream().filter(o -> o.getOrderID() == orderId).findFirst();
-    }
 
     /**
      * Returns a list of outstanding (not completed) orders.
@@ -64,17 +52,6 @@ public class OrderManaged {
                 .collect(Collectors.toList());
     }
 
-    /**
-     * Returns a list of orders with a specific status.
-     *
-     * @param status the order status to filter by
-     * @return list of orders with that status
-     */
-    public List<Order> findOrdersByStatus(OrderStatus status) {
-        return orders.stream()
-                .filter(order -> order.getStatus() == status)
-                .collect(Collectors.toList());
-    }
 
     /**
      * Finds orders by the given customer ID.
@@ -88,33 +65,6 @@ public class OrderManaged {
                 .collect(Collectors.toList());
     }
 
-    /**
-     * Returns all orders that match the given order type.
-     *
-     * @param type the type of order (EAT_IN, TAKEAWAY, DELIVERY)
-     * @return list of matching orders
-     */
-    public List<Order> findOrdersByType(OrderType type) {
-        return orders.stream()
-                .filter(order -> order.getOrderType() == type)
-                .collect(Collectors.toList());
-    }
-
-    /**
-     * Removes a specific order.
-     *
-     * @param order the order to remove
-     */
-    public void removeOrder(Order order) {
-        orders.remove(order);
-    }
-
-    /**
-     * Clears all orders (use cautiously).
-     */
-    public void clearAllOrders() {
-        orders.clear();
-    }
 
     /**
      * Loads orders from file and parses them into Order objects, using menu items for item price lookup.
@@ -193,7 +143,6 @@ public class OrderManaged {
             return null;
         }
     }
-
 
     private static MenuItem findMenuItemByName(String name, List<MenuItem> menuItems) {
         for (MenuItem item : menuItems) {

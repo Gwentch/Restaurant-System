@@ -1,6 +1,5 @@
 package cafe94.system.model.booking;
 
-import cafe94.system.model.user.Customer;
 
 /**
  * Represents a booking made by a customer to eat in the restaurant.

@@ -15,36 +15,45 @@ import javafx.scene.control.*;
 
 import java.util.List;
 
+/**
+ * Controller for the Order History view in the Cafe94 system.
+ * <p>
+ * Displays a list of past orders placed by the logged-in customer, along with
+ * detailed item-level breakdown for each selected order. This controller also
+ * supports navigation back to the customer dashboard.
+ * </p>
+ *
+ * <ul>
+ *   <li>Populates orders and items in corresponding table views</li>
+ *   <li>Updates the UI based on selected order</li>
+ *   <li>Integrates with {@link OrderManaged} to retrieve customer-specific orders</li>
+ * </ul>
+ */
 public class OrderHistoryController {
 
-    // -------- FXML --------
-    @FXML
-    private TableView<Order> ordersTable;
-    @FXML
-    private TableColumn<Order, Integer> orderIdColumn;
-    @FXML
-    private TableColumn<Order, String> orderTypeColumn;
-    @FXML
-    private TableColumn<Order, Double> orderTotalColumn;
 
-    @FXML
-    private TableView<OrderItem> itemsTable;
-    @FXML
-    private TableColumn<OrderItem, String> itemNameColumn;
-    @FXML
-    private TableColumn<OrderItem, Integer> quantityColumn;
-    @FXML
-    private TableColumn<OrderItem, Double> unitPriceColumn;
-    @FXML
-    private TableColumn<OrderItem, Double> subtotalColumn;
+    @FXML private TableView<Order> ordersTable;
+    @FXML private TableColumn<Order, Integer> orderIdColumn;
+    @FXML private TableColumn<Order, String> orderTypeColumn;
+    @FXML private TableColumn<Order, Double> orderTotalColumn;
 
-    @FXML
-    private Label totalLabel;
+    @FXML private TableView<OrderItem> itemsTable;
+    @FXML private TableColumn<OrderItem, String> itemNameColumn;
+    @FXML private TableColumn<OrderItem, Integer> quantityColumn;
+    @FXML private TableColumn<OrderItem, Double> unitPriceColumn;
+    @FXML private TableColumn<OrderItem, Double> subtotalColumn;
 
-    // -------- Data --------
+    @FXML private Label totalLabel;
+
     private Customer customer;
     private OrderManaged orderManaged;
 
+    /**
+     * Initializes the Order History view after the FXML components are loaded.
+     * <p>
+     * Sets up table column bindings and a selection listener to show
+     * detailed items and total when an order is selected.
+     */
     @FXML
     private void initialize() {
         orderIdColumn.setCellValueFactory(data -> new SimpleIntegerProperty(data.getValue().getOrderID()).asObject());
@@ -67,13 +76,23 @@ public class OrderHistoryController {
         });
     }
 
-    // -------- Setup method (replaces setX methods) --------
+    /**
+     * Sets up the Order History view for the specified customer using the provided order manager.
+     * This method loads and displays all orders placed by the customer.
+     *
+     * @param customer      The logged-in customer whose order history is to be displayed.
+     * @param orderManaged  The order manager instance used to retrieve customer orders.
+     */
     public void setup(Customer customer, OrderManaged orderManaged) {
         this.customer = customer;
         this.orderManaged = orderManaged;
         reloadOrders();
     }
 
+    /**
+     * Reloads and displays all orders associated with the current customer.
+     * Clears the item table and resets the total label.
+     */
     private void reloadOrders() {
         if (customer == null || orderManaged == null) return;
 
@@ -83,7 +102,10 @@ public class OrderHistoryController {
         totalLabel.setText("Total: £0.00");
     }
 
-
+    /**
+     * Navigates the user back to the Customer Dashboard screen,
+     * restoring current session state via {@link AppState}.
+     */
     @FXML
     private void handleBack() {
         SceneManager.switchToWithControllerAndSetup("customer/CustomerDashboard.fxml",

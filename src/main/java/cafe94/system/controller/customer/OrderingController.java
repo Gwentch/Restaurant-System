@@ -23,9 +23,29 @@ import javafx.util.Pair;
 
 import java.util.List;
 
+/**
+ * Controller for the Ordering view in the Cafe94 system.
+ * <p>
+ * This controller allows customers (or staff on behalf of customers)
+ * to browse the menu and daily specials, add items to a basket, and
+ * place takeaway or delivery orders. It handles item selection, basket
+ * management, total calculation, and order confirmation.
+ * </p>
+ *
+ * Features include:
+ * <ul>
+ *   <li>Dynamic loading of menu and daily specials</li>
+ *   <li>Basket management (add/remove items, subtotal tracking)</li>
+ *   <li>Takeaway and delivery order creation with validation</li>
+ *   <li>Popup confirmation with editable delivery/pickup info</li>
+ *   <li>Data persistence of confirmed orders</li>
+ * </ul>
+ *
+ * Integrates with {@link OrderManaged}, {@link DataSaver}, and {@link SceneManager}
+ * to ensure consistent application state and persistence.
+ */
 public class OrderingController {
 
-    // === FXML ===
     @FXML private TextField customerId;
     @FXML private ChoiceBox<OrderType> orderType;
 
@@ -59,9 +79,15 @@ public class OrderingController {
     private List<MenuItem> initialDailySpecials;
     private boolean initialized = false;
 
-    // === INIT ===
+
+    /**
+     * Initializes the ordering screen after the FXML UI components are loaded.
+     * <p>
+     * Binds menu and daily specials to tables, sets up quantity spinners,
+     * basket item columns, and interaction behaviors like selection clearing.
+     */
     @FXML
-    public void initialize() {
+    private void initialize() {
         orderType.setItems(FXCollections.observableArrayList(OrderType.TAKEAWAY, OrderType.DELIVERY));
         orderType.getSelectionModel().selectFirst();
 
@@ -91,21 +117,39 @@ public class OrderingController {
         applySetup(); // If setup() ran before initialize, now apply data
     }
 
+    /**
+     * Clears row selections in the provided TableViews to avoid multi-selection issues.
+     *
+     * @param tables The tables to clear selection from.
+     */
     private void clearOtherSelections(TableView<?>... tables) {
         for (TableView<?> table : tables) {
             table.getSelectionModel().clearSelection();
         }
     }
 
-    // Setup Data
-    public void setup(Customer customer) {
+    /**
+     * Sets up the ordering view with the current customer, order manager,
+     * and menu data. This method is typically called after scene loading
+     * to initialize content before interaction.
+     *
+     * @param customer      The logged-in customer placing the order.
+     * @param orderManaged  The shared order manager instance.
+     * @param menuItems     The full list of available menu items.
+     * @param dailySpecials The list of current daily specials.
+     */
+    public void setup(Customer customer, OrderManaged orderManaged, List<MenuItem> menuItems, List<MenuItem> dailySpecials) {
         this.customer = customer;
-        this.orderManaged = AppState.orderManaged;
-        this.initialMenuItems = AppState.menuItems;
-        this.initialDailySpecials = AppState.dailySpecials;
+        this.orderManaged = orderManaged;
+        this.initialMenuItems = menuItems;
+        this.initialDailySpecials = dailySpecials;
         applySetup();
     }
 
+    /**
+     * Populates menu and specials tables once both the controller and scene are initialized.
+     * Called from `initialize()` or `setup()` depending on execution order.
+     */
     private void applySetup() {
         if (!initialized || customer == null) {
             return;
@@ -115,17 +159,29 @@ public class OrderingController {
         dailySpecials.setAll(initialDailySpecials);
     }
 
+    /**
+     * Adds a selected regular menu item to the basket, updating quantity if it already exists.
+     */
     // Basket Actions
     @FXML private void handleAddMenu() {
         MenuItem selected = menuTable.getSelectionModel().getSelectedItem();
         addToBasket(selected, menuQuantitySpinner.getValue());
     }
 
+    /**
+     * Adds a selected daily special to the basket, updating quantity if already present.
+     */
     @FXML private void handleAddSpecial() {
         MenuItem selected = specialsTable.getSelectionModel().getSelectedItem();
         addToBasket(selected, specialQuantitySpinner.getValue());
     }
 
+    /**
+     * Adds the specified menu item to the basket. If it already exists, increases the quantity.
+     *
+     * @param item The selected menu item to add.
+     * @param qty  The quantity to add.
+     */
     private void addToBasket(MenuItem item, int qty) {
         if (item == null) return;
 
@@ -141,6 +197,9 @@ public class OrderingController {
         updateOrderTotal();
     }
 
+    /**
+     * Removes the selected item from the basket.
+     */
     @FXML private void handleRemoveSelected() {
         OrderItem selected = basketTable.getSelectionModel().getSelectedItem();
         if (selected != null) {
@@ -149,7 +208,13 @@ public class OrderingController {
         }
     }
 
-    // Order Confirmation
+    /**
+     * Handles the order confirmation process.
+     * <p>
+     * Based on the selected order type, creates a new order,
+     * opens a confirmation popup to gather additional info, and
+     * saves the order to the system upon confirmation.
+     */
     @FXML private void handleConfirmOrder() {
         if (basket.isEmpty()) {
             showInfo("Basket Empty", "Please add items before placing an order.");
@@ -202,7 +267,9 @@ public class OrderingController {
         specialQuantitySpinner.getValueFactory().setValue(1);
     }
 
-
+    /**
+     * Returns the user to the Customer Dashboard, reinitializing the view with current state.
+     */
     @FXML
     private void handleBack() {
         SceneManager.switchToWithControllerAndSetup("customer/CustomerDashboard.fxml", c -> {
@@ -215,7 +282,9 @@ public class OrderingController {
         });
     }
 
-    // helper method
+    /**
+     * Recalculates and displays the total cost of all items in the basket.
+     */
     private void updateOrderTotal() {
         double total = basket.stream().mapToDouble(OrderItem::getSubtotal).sum();
         orderTotalLabel.setText(String.format("Total: £%.2f", total));

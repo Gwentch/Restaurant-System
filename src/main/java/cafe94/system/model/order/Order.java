@@ -1,15 +1,16 @@
 package cafe94.system.model.order;
 
 import cafe94.system.model.menu.MenuItem;
-import cafe94.system.model.order.OrderItem;
-import cafe94.system.model.order.OrderType;
-
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Abstract superclass representing a general order in Cafe94.
- * Specific types of orders such as EatIn, Takeaway, and Delivery should extend this class.
+ * Abstract superclass representing a general order in the Cafe94 system.
+ * <p>
+ * This class defines common properties and behaviors for all types of orders,
+ * including Eat-In, Takeaway, and Delivery orders. Each subclass must provide
+ * its specific {@link OrderType} and override the serialization method if needed.
+ * </p>
  */
 public abstract class Order {
 
@@ -21,19 +22,27 @@ public abstract class Order {
 
     protected final List<OrderItem> items = new ArrayList<>();
 
-    // Constructor for new orders
+    /**
+     * Constructor for new orders with auto-generated order ID.
+     *
+     * @param customerID the ID of the customer placing the order
+     */
     public Order(int customerID) {
         this.orderID = nextOrderID++;
         this.customerID = customerID;
     }
 
-    // Constructor for loading from file (custom ID)
+    /**
+     * Constructor for loading orders from file (with specified ID).
+     *
+     * @param orderID    the unique order ID from storage
+     * @param customerID the ID of the customer
+     */
     public Order(int orderID, int customerID) {
         this.orderID = orderID;
         this.customerID = customerID;
     }
 
-    // === Accessors ===
     public int getOrderID() {
         return orderID;
     }
@@ -66,74 +75,56 @@ public abstract class Order {
         return items;
     }
 
+    /**
+     * Adds an item to this order.
+     *
+     * @param item     the menu item
+     * @param quantity the quantity ordered
+     */
     public void addItem(MenuItem item, int quantity) {
         items.add(new OrderItem(item, quantity));
     }
 
+    /**
+     * Calculates the total cost of all items in the order.
+     *
+     * @return the total amount
+     */
     public double getTotalAmount() {
         return items.stream().mapToDouble(OrderItem::getSubtotal).sum();
     }
 
-    //  Static Method to Parse from File
-    public static Order parseFromFile(String line, List<MenuItem> menuItems) {
-        try {
-            String[] parts = line.split(";", -1);
-            if (parts.length < 10) return null;
-
-            int orderID = Integer.parseInt(parts[0]);
-            int customerID = Integer.parseInt(parts[1]);
-            OrderType type = OrderType.valueOf(parts[2].toUpperCase());
-            boolean completed = Boolean.parseBoolean(parts[3]);
-
-            String pickupTime = parts[4];
-            String deliveryAddress = parts[5];
-            String estimatedDeliveryTime = parts[6];
-            int assignedDriverID = parts[7].isEmpty() ? -1 : Integer.parseInt(parts[7]);
-
-            String itemData = parts[8];
-            OrderStatus status = OrderStatus.valueOf(parts[9].trim());
-
-            List<OrderItem> items = new ArrayList<>();
-            if (!itemData.isEmpty()) {
-                String[] itemParts = itemData.split(",");
-                for (String itemStr : itemParts) {
-                    String[] itemDetail = itemStr.split("#");
-                    if (itemDetail.length == 2) {
-                        String itemName = itemDetail[0].trim();
-                        int quantity = Integer.parseInt(itemDetail[1].trim());
-
-                        MenuItem matchedItem = menuItems.stream()
-                                .filter(m -> m.getName().equalsIgnoreCase(itemName))
-                                .findFirst()
-                                .orElse(null);
-
-                        if (matchedItem != null) {
-                            items.add(new OrderItem(matchedItem, quantity));
-                        } else {
-                            System.out.println("⚠ Menu item not found while loading: " + itemName);
-                        }
-                    }
-                }
-            }
-
-            // Create the appropriate subclass of Order
-            return switch (type) {
-                case EAT_IN -> new EatInOrder(orderID, customerID, completed, items, status);
-                case TAKEAWAY -> new TakeawayOrder(orderID, customerID, completed, items, status, pickupTime);
-                case DELIVERY -> new DeliveryOrder(orderID, customerID, completed, items, status, deliveryAddress, estimatedDeliveryTime, assignedDriverID);
-            };
-
-        } catch (Exception e) {
-            System.err.println("Failed to parse order: " + line);
-            e.printStackTrace();
-            return null;
-        }
+    /**
+     * Gets the next order ID value to assign.
+     *
+     * @return the next available order ID
+     */
+    public static int getNextOrderID() {
+        return nextOrderID;
     }
 
-    // Abstract methods to implement
+    /**
+     * Sets the next order ID value.
+     *
+     * @param nextID the new order ID starting point
+     */
+    public static void setNextOrderID(int nextID) {
+        nextOrderID = nextID;
+    }
+
+    /**
+     * Returns the type of this order (must be overridden by subclasses).
+     *
+     * @return the {@link OrderType} of this order
+     */
     public abstract OrderType getOrderType();
 
-
+    /**
+     * Serializes the order into a semicolon-delimited string for file storage.
+     * Includes type-specific fields such as pickup time or delivery details.
+     *
+     * @return a string representation of the order
+     */
     public String toFileString() {
         String pickupTime = "";
         String deliveryAddress = "";
@@ -165,7 +156,12 @@ public abstract class Order {
         );
     }
 
-
+    /**
+     * Converts the list of items to a file-friendly string format.
+     * Each item is represented as {@code name#quantity}.
+     *
+     * @return a comma-separated string of items
+     */
     protected String itemsToString() {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < items.size(); i++) {
@@ -174,14 +170,5 @@ public abstract class Order {
             if (i < items.size() - 1) sb.append(",");
         }
         return sb.toString();
-    }
-
-    // Handle OrderID increment tracking
-    public static int getNextOrderID() {
-        return nextOrderID;
-    }
-
-    public static void setNextOrderID(int nextID) {
-        nextOrderID = nextID;
     }
 }

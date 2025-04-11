@@ -1,6 +1,5 @@
 package cafe94.system.model.order;
 
-import cafe94.system.model.order.OrderStatus;
 
 /**
  * Enum representing the type of orders in Cafe94.

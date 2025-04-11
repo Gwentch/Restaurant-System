@@ -18,11 +18,22 @@ import javafx.scene.control.*;
 import javafx.stage.Stage;
 import javafx.util.Pair;
 
-
+/**
+ * Controller for the Manager Dashboard in the Cafe94 system.
+ * <p>
+ * This dashboard enables the manager to:
+ * <ul>
+ *   <li>View, add, edit, and remove staff profiles</li>
+ *   <li>Monitor outstanding orders and view order details</li>
+ *   <li>Generate various business reports (e.g., top staff, popular items)</li>
+ * </ul>
+ *
+ * The manager dashboard integrates with shared utilities like {@link ReportHelper},
+ * {@link OutstandingOrderHelper}, and {@link DataSaver} for managing data display and persistence.
+ */
 public class ManagerDashboardController {
 
     @FXML private Label loggedInAsLabel;
-
     @FXML private TableView<Staff> staffTable;
     @FXML private TableColumn<Staff, Integer> idColumn;
     @FXML private TableColumn<Staff, String> firstNameColumn;
@@ -53,7 +64,14 @@ public class ManagerDashboardController {
     private static final String STAFF_PROFILE_FILE = "src/main/resources/data/staff_profile.txt";
     private ObservableList<Staff> staffList;
 
-
+    /**
+     * Initializes the Manager Dashboard with order and staff data.
+     * <p>
+     * Loads the staff list and outstanding orders into their respective tables,
+     * and displays the name of the currently logged-in staff member.
+     *
+     * @param orderManaged The order manager instance containing all current orders.
+     */
     public void setup(OrderManaged orderManaged) {
         this.staffList = FXCollections.observableArrayList(AppState.allStaff);
         staffTable.setItems(staffList);
@@ -64,9 +82,14 @@ public class ManagerDashboardController {
         }
     }
 
-
+    /**
+     * Initializes the Manager Dashboard UI components.
+     * <p>
+     * Configures table columns, binds the remove button, and sets up
+     * order and item table views using helper utilities.
+     */
     @FXML
-    public void initialize() {
+    private void initialize() {
         // Staff table columns
         idColumn.setCellValueFactory(data ->
                 new SimpleIntegerProperty(data.getValue().getId()).asObject());
@@ -77,8 +100,7 @@ public class ManagerDashboardController {
         roleColumn.setCellValueFactory(data ->
                 new SimpleStringProperty(data.getValue().getRole()));
         hoursToWorkCol.setCellValueFactory(data ->
-                new SimpleDoubleProperty(
-                        data.getValue().getHoursToWork().stream().mapToDouble(Double::doubleValue).sum()).asObject()
+                new SimpleDoubleProperty(data.getValue().getHoursToWork().stream().mapToDouble(Double::doubleValue).sum()).asObject()
         );
 
         totalHoursWorkedCol.setCellValueFactory(data ->
@@ -108,10 +130,20 @@ public class ManagerDashboardController {
         );
     }
 
+    /**
+     * Logs the manager out of the dashboard and returns to the login screen.
+     */
     @FXML private void handleLogout() {
         SceneManager.switchTo("standard/WelcomeLogin.fxml");
     }
 
+    /**
+     * Handles the action of adding a new staff member.
+     * <p>
+     * Opens a popup form for entering new staff details. If the user confirms
+     * and saves the new staff, it is added to the table, synchronized with
+     * the application state, and persisted to file.
+     */
     @FXML private void handleAddStaff() {
         Pair<Stage, StaffDetailsPopupController> popup = SceneManager.loadPopup(
                 "staff/StaffDetailsPopup.fxml",
@@ -133,6 +165,13 @@ public class ManagerDashboardController {
         }
     }
 
+    /**
+     * Handles the editing of a selected staff member.
+     * <p>
+     * Opens a pre-filled popup for editing the selected staff's details.
+     * On confirmation, the changes are saved, the table is refreshed,
+     * and data is persisted to file.
+     */
     @FXML private void handleEditStaff() {
         Staff selected = staffTable.getSelectionModel().getSelectedItem();
         if (selected == null) {
@@ -166,6 +205,13 @@ public class ManagerDashboardController {
         }
     }
 
+    /**
+     * Handles the removal of a selected staff member.
+     * <p>
+     * Prompts for confirmation before deleting the selected staff member
+     * from the table, application state, and file. Displays a confirmation
+     * message upon successful removal.
+     */
     @FXML private void handleRemoveStaff() {
         Staff selected = staffTable.getSelectionModel().getSelectedItem();
         if (selected == null) {
@@ -185,23 +231,45 @@ public class ManagerDashboardController {
         });
     }
 
+    /**
+     * Generates a bar chart and textual report showing the most popular items
+     * based on order data.
+     */
     @FXML private void generateMostPopularItems() {
         ReportHelper.generateMostPopularItems(AppState.orderManaged, reportChart, reportSect, reportTabPane);
     }
 
+    /**
+     * Generates a report identifying the most active customers based on
+     * the number of orders they have placed.
+     */
     @FXML private void generateMostActiveCustomer() {
         ReportHelper.generateMostActiveCustomers(AppState.orderManaged, AppState.allCustomer, reportChart, reportSect, reportTabPane);
     }
 
+    /**
+     * Generates a report highlighting the busiest ordering time periods
+     * across all orders.
+     */
     @FXML private void generateBusiestPeriods() {
         ReportHelper.generateBusiestPeriods(AppState.orderManaged, reportChart, reportSect, reportTabPane);
     }
 
+    /**
+     * Generates a report identifying the staff member with the highest
+     * number of hours worked.
+     */
     @FXML private void generateTopStaff() {
         ReportHelper.generateTopStaff(AppState.allStaff, reportChart, reportSect, reportTabPane);
     }
 
 
+    /**
+     * Synchronizes the current staff list with the global {@link AppState}.
+     * <p>
+     * This ensures that any changes made locally (e.g., add/edit/remove)
+     * are reflected across the application.
+     */
     // Helper method
     private void syncStaffListToAppState() {
         AppState.allStaff.clear();

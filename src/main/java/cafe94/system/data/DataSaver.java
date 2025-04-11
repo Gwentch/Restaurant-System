@@ -10,7 +10,6 @@ import cafe94.system.model.menu.MenuItem;
 import cafe94.system.model.order.Order;
 import cafe94.system.model.user.Customer;
 import cafe94.system.model.user.Staff;
-
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;

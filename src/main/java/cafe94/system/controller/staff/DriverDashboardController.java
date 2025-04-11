@@ -12,8 +12,21 @@ import javafx.scene.control.*;
 import java.util.List;
 
 /**
- * Controller for the Driver Dashboard.
- * Displays assigned delivery orders and allows marking them as delivered.
+ * Controller for the Driver Dashboard in the Cafe94 system.
+ * <p>
+ * This dashboard allows logged-in drivers to:
+ * <ul>
+ *   <li>View delivery orders assigned to them</li>
+ *   <li>Mark orders as delivered, updating their status</li>
+ *   <li>Refresh the order list manually</li>
+ * </ul>
+ *
+ * The controller assigns unassigned delivery orders to the current driver
+ * on load, and only displays orders with {@code READY_TO_DELIVER} status.
+ * </p>
+ *
+ * Uses {@link OutstandingOrderHelper} for table configuration and
+ * {@link DataSaver} for saving order updates.
  */
 public class DriverDashboardController {
 
@@ -37,8 +50,10 @@ public class DriverDashboardController {
     private OrderManaged orderManaged;
 
     /**
-     * Injects required data and loads assigned orders.
-     * @param orderManaged Order manager from AppState
+     * Sets up the Driver Dashboard with the given {@link OrderManaged} instance.
+     * Loads all outstanding delivery orders assigned to the current driver.
+     *
+     * @param orderManaged The shared order manager instance containing all orders.
      */
     public void setup(OrderManaged orderManaged) {
         this.orderManaged = orderManaged;

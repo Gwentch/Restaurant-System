@@ -7,9 +7,6 @@ import cafe94.system.model.booking.Booking;
 import cafe94.system.model.menu.MenuItem;
 import cafe94.system.model.order.*;
 import cafe94.system.model.user.*;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -209,7 +206,14 @@ public class DataLoader {
         return bookings;
     }
 
-    // Helper method
+    /**
+     * Parses a single order line from file into an {@link Order} object.
+     * Supports all three order types: Eat-In, Takeaway, and Delivery.
+     *
+     * @param line       the line of text from the order file
+     * @param menuItems  the list of menu items to match against for order items
+     * @return the parsed Order object, or null if parsing fails
+     */
     private static Order parseOrderWithMenu(String line, List<MenuItem> menuItems) {
         try {
             String[] parts = line.split(";", -1);
@@ -258,6 +262,13 @@ public class DataLoader {
         }
     }
 
+    /**
+     * Searches for a {@link MenuItem} in the given list by name (case-insensitive).
+     *
+     * @param name       the name of the menu item to search for
+     * @param menuItems  the list of available menu items
+     * @return the matching MenuItem, or null if not found
+     */
     private static MenuItem findMenuItemByName(String name, List<MenuItem> menuItems) {
         for (MenuItem item : menuItems) {
             if (item.getName().equalsIgnoreCase(name)) {
@@ -266,5 +277,4 @@ public class DataLoader {
         }
         return null;
     }
-
 }

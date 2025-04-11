@@ -10,7 +10,20 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 
 /**
- * Controller for handling customer registration logic.
+ * Controller for handling customer registration in the Cafe94 system.
+ * <p>
+ * This controller manages the registration form, validates user input,
+ * creates a new {@link Customer}, saves it to the persistent store, and
+ * navigates the user back to the login screen.
+ * </p>
+ *
+ * Fields required for registration:
+ * <ul>
+ *   <li>First Name</li>
+ *   <li>Last Name</li>
+ *   <li>Address</li>
+ *   <li>Password</li>
+ * </ul>
  */
 public class RegisterCustomerController {
 

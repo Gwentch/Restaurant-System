@@ -19,6 +19,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+/**
+ * Controller for the Chef Dashboard in the Cafe94 system.
+ * <p>
+ * This controller enables chefs to:
+ * <ul>
+ *   <li>View and filter outstanding orders that require preparation</li>
+ *   <li>Mark orders as completed, updating their status and optionally assigning drivers</li>
+ *   <li>Add, edit, and remove daily specials from the menu</li>
+ * </ul>
+ *
+ * It integrates with shared utilities such as {@link OutstandingOrderHelper} for
+ * order table configuration and uses {@link DataSaver} for persistence.
+ */
 public class ChefDashboardController {
     @FXML private ComboBox<String> filterComboBox;
     @FXML private TableView<Order> ordersTable;
@@ -56,7 +69,14 @@ public class ChefDashboardController {
     private List<Staff> staffList;
 
 
-    // Called from Main App to inject data
+    /**
+     * Initializes the Chef Dashboard with order management and menu data.
+     * This method should be called after FXML loading to provide necessary context.
+     *
+     * @param orderManaged         The order manager instance containing all orders.
+     * @param menuItemsFromFile    The full list of menu items available in the system.
+     * @param specialsFromFile     The current list of daily special menu items.
+     */
     public void setup(OrderManaged orderManaged, List<MenuItem> menuItemsFromFile, List<MenuItem> specialsFromFile) {
         this.orderManaged = orderManaged;
         this.menuItems.setAll(menuItemsFromFile);
@@ -73,6 +93,12 @@ public class ChefDashboardController {
         loadOrders("My Role's Orders");
     }
 
+    /**
+     * Initializes the Chef Dashboard after the FXML elements are loaded.
+     * <p>
+     * Sets up table columns, listeners, data bindings, and combo box filters
+     * for managing daily specials and outstanding orders.
+     */
     @FXML
     private void initialize() {
         // Set up the columns based on role
@@ -112,7 +138,11 @@ public class ChefDashboardController {
                 new SimpleObjectProperty<>(data.getValue().getPrice()));
     }
 
-
+    /**
+     * Loads and filters the chef-relevant outstanding orders into the orders table.
+     *
+     * @param filterType The filter selected from the dropdown (e.g., "All Outstanding").
+     */
     private void loadOrders(String filterType) {
         if (orderManaged == null) {
             return;
@@ -127,6 +157,10 @@ public class ChefDashboardController {
         ordersTable.setItems(chefOrders);
     }
 
+    /**
+     * Adds a selected menu item to the daily specials list, avoiding duplicates.
+     * Saves the updated daily specials to file.
+     */
     @FXML
     private void handleAddFromMenu() {
         MenuItem selected = menuComboBox.getValue();
@@ -137,6 +171,10 @@ public class ChefDashboardController {
         }
     }
 
+    /**
+     * Adds a new manually-entered item to the daily specials list.
+     * Validates name and price format before saving.
+     */
     @FXML
     private void handleAddNewSpecial() {
         String name = specialNameField.getText().trim();
@@ -153,6 +191,10 @@ public class ChefDashboardController {
         }
     }
 
+    /**
+     * Removes the selected item from the daily specials list.
+     * Updates the persistent storage after removal.
+     */
     @FXML
     private void handleRemoveSpecial() {
         MenuItem selected = specialsTable.getSelectionModel().getSelectedItem();
@@ -163,11 +205,20 @@ public class ChefDashboardController {
         }
     }
 
+    /**
+     * Logs the chef out and navigates back to the login screen.
+     */
     @FXML
     private void handleLogout() {
         SceneManager.switchTo("standard/WelcomeLogin.fxml");
     }
 
+    /**
+     * Marks a selected PENDING_PREP order as ready.
+     * <p>
+     * Updates the order status to the next logical step, assigns a driver if it's a delivery order,
+     * saves the updated orders, and refreshes the UI.
+     */
     @FXML
     private void handleMarkOrderComplete() {
         Order selected = ordersTable.getSelectionModel().getSelectedItem();
@@ -188,7 +239,7 @@ public class ChefDashboardController {
                 System.out.println("Assigned driver ID: " + assigned.getId() + " to order #" + selected.getOrderID());
 
             } else {
-                showError("⚠ Currently no available drivers to assign!");
+                showError("Currently no available drivers to assign!");
             }
         }
 
@@ -206,7 +257,11 @@ public class ChefDashboardController {
         actionButton.setDisable(true);
     }
 
-
+    /**
+     * Retrieves all available drivers from the staff list.
+     *
+     * @return A list of staff who are instances of {@link cafe94.system.model.user.Driver}.
+     */
     private List<Driver> getAvailableDrivers() {
         List<Driver> drivers = new ArrayList<>();
         if (staffList == null) {
@@ -221,6 +276,9 @@ public class ChefDashboardController {
         return drivers;
     }
 
+    /**
+     * Persists the current list of daily specials to file using {@link DataSaver}.
+     */
     // Helper methods
     private void saveSpecials() {
         DataSaver.saveDailySpecials(DAILY_SPECIALS_FILE, dailySpecials);

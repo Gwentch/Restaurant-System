@@ -25,7 +25,7 @@
         <!-- Staff Role ComboBox -->
         <ComboBox fx:id="staffComboBox" promptText="Select Staff Profile" maxWidth="250"/>
 
-        <CheckBox fx:id="manualLoginCheckBox" text="Manual Login" onAction="#handleToggleLoginMode"/>
+        <CheckBox fx:id="manualLoginCheckBox" text="Customer Login" onAction="#handleToggleLoginMode"/>
 
         <!-- Login Button -->
         <Button text="Login" onAction="#handleLogin"/>

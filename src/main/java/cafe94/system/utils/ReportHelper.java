@@ -1,15 +1,12 @@
 package cafe94.system.utils;
 
-import cafe94.system.model.menu.MenuItem;
 import cafe94.system.model.order.*;
 import cafe94.system.model.user.Customer;
 import cafe94.system.model.user.Staff;
 import javafx.scene.chart.BarChart;
 import javafx.scene.chart.XYChart;
-import javafx.scene.control.Label;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextArea;
-
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -62,11 +59,10 @@ public class ReportHelper {
 
         for (Customer customer : customerList) {
             int count = (int) orderManaged.getAllOrders().stream()
-                    .filter(order -> order.getCustomerID() == customer.getId()) // Compare as int
+                    .filter(order -> order.getCustomerID() == customer.getId())
                     .count();
 
             if (count > 0) {
-                // Key = "Full Name (ID: X)"
                 String label = customer.getFullName() + " (ID: " + customer.getId() + ")";
                 customerOrderCount.put(label, count);
             }
@@ -95,7 +91,7 @@ public class ReportHelper {
 
         chart.getData().add(series);
 
-        // --- Summary ---
+        // Summary
         StringBuilder sb = new StringBuilder("Most Active Customers:\n\n");
         for (Map.Entry<String, Integer> entry : topCustomers) {
             sb.append(entry.getKey()).append(" - ")

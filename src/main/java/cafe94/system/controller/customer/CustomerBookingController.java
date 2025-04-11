@@ -52,6 +52,10 @@ public class CustomerBookingController {
         populateTimeSlots();
     }
 
+    /**
+     * Initializes the booking view by loading bookings, setting up table columns,
+     * and refreshing the table content.
+     */
     @FXML
     private void initialize() {
         bookings = FXCollections.observableArrayList(DataLoader.loadBookings(BOOKING_FILE_PATH));
@@ -60,6 +64,10 @@ public class CustomerBookingController {
         refreshTable();
     }
 
+    /**
+     * Configures the cell value factories for each column in the booking table.
+     * This determines how each cell displays booking data.
+     */
     private void setupTableColumns() {
         idCol.setCellValueFactory(data -> new SimpleIntegerProperty(data.getValue().getBookingID()).asObject());
         dateCol.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getDate()));
@@ -69,19 +77,18 @@ public class CustomerBookingController {
         statusCol.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getStatus().toString()));
     }
 
+    /**
+     * Refreshes the booking table view to reflect the latest list of bookings.
+     */
     private void refreshTable() {
         bookingTable.setItems(FXCollections.observableArrayList(bookings));
     }
 
 
     /**
-     * Handles the customer booking submission.
-     * Validates inputs, creates a booking, saves it to file, and updates the table view.
+     * Handles the submission of a new booking request. Validates input, creates a
+     * booking, saves it, and updates the UI with a confirmation message.
      */
-    /**
-    * Handles submission of a new booking by validating inputs,
-    * creating the booking, saving it to file, and updating the table view.
- */
     @FXML
     private void handleSubmit() {
         try {
@@ -126,6 +133,10 @@ public class CustomerBookingController {
         }
     }
 
+    /**
+     * Handles the cancellation of a selected booking. Prompts for confirmation
+     * and updates the status if approved.
+     */
     @FXML
     private void handleCancel() {
         Booking selected = bookingTable.getSelectionModel().getSelectedItem();
@@ -147,6 +158,9 @@ public class CustomerBookingController {
         }
     }
 
+    /**
+     * Handles navigation back to the customer dashboard.
+     */
     @FXML
     private void handleBack() {
         SceneManager.switchToWithControllerAndSetup("customer/CustomerDashboard.fxml",
@@ -156,11 +170,10 @@ public class CustomerBookingController {
         );
     }
 
-    // Helper method
-    @FXML
     /**
-     * Populates the timeComboBox with 30-minute time slots between 11:00 and 22:00.
+     * Populates the time slot ComboBox with selectable booking times from 11:00 to 22:00.
      */
+    @FXML
     private void populateTimeSlots() {
         List<String> timeSlots = new ArrayList<>();
         for (int hour = 11; hour <= 21; hour++) {

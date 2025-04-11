@@ -10,9 +10,16 @@ import cafe94.system.model.user.Staff;
 import java.util.List;
 
 /**
- * AppState holds shared application state accessible across controllers.
+ * AppState holds shared application state that is accessible across
+ * all controllers in the Cafe94 system.
+ *
+ * This includes:
+ * <ul>
+ *   <li>Currently logged-in customer or staff</li>
+ *   <li>All loaded data: customers, staff, menu, specials, orders, bookings</li>
+ *   <li>Shared order manager for consistent order tracking</li>
+ * </ul>
  */
-
 public class AppState {
     public static Staff loggedInStaff;
     public static List<Staff> allStaff;
@@ -23,6 +30,10 @@ public class AppState {
     public static OrderManaged orderManaged;
     public static List<Booking> bookingList;
 
+    /**
+     * Loads and initializes all application-wide shared data.
+     * This method should be called once during application startup.
+     */
     public static void initialize() {
         allCustomer = DataLoader.loadCustomers("src/main/resources/data/customer.txt");
         allStaff = DataLoader.loadStaff("src/main/resources/data/staff_profile.txt");
